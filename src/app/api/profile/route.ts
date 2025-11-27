@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import { getRequestContext } from '@cloudflare/next-on-pages';
 
 // Edge Runtime configuration for Cloudflare Pages
 export const runtime = 'edge';
@@ -10,6 +9,12 @@ const corsHeaders = {
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
 };
+
+// Helper to get Cloudflare environment
+function getEnv(request: Request): any {
+  // @ts-ignore - Cloudflare adds env to request
+  return (request as any).env || (globalThis as any).env || {};
+}
 
 // Helper function to parse JSON fields
 function parseJsonFields(profile: any) {
@@ -47,7 +52,7 @@ export async function OPTIONS() {
 
 export async function GET(request: Request) {
   try {
-    const { env } = getRequestContext();
+    const env = getEnv(request);
     const db = env.DB as D1Database;
     
     const { searchParams } = new URL(request.url);
@@ -80,7 +85,7 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const { env } = getRequestContext();
+    const env = getEnv(request);
     const db = env.DB as D1Database;
     const body = await request.json();
     const data = stringifyJsonFields(body);
@@ -116,10 +121,10 @@ export async function POST(request: Request) {
 
 export async function PUT(request: Request) {
   try {
-    const { env } = getRequestContext();
+    const env = getEnv(request);
     const db = env.DB as D1Database;
     const body = await request.json();
-    const { id, ...updateData } = body;
+    const { id, ...updateData } = body as any;
     const data = stringifyJsonFields(updateData);
 
     await db.prepare(`
