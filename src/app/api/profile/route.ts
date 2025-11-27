@@ -10,10 +10,34 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
 };
 
-// Helper to get Cloudflare environment
-function getEnv(request: Request): any {
-  // @ts-ignore - Cloudflare adds env to request
-  return (request as any).env || (globalThis as any).env || {};
+// Type for Cloudflare environment
+type CloudflareEnv = {
+  DB: D1Database;
+};
+
+// Helper to get Cloudflare D1 Database
+// In Cloudflare Pages, the context is available via process.env in Edge Runtime
+function getDB(): D1Database | null {
+  try {
+    // @ts-ignore - Cloudflare bindings are injected into process.env
+    const db = process.env.DB as D1Database | undefined;
+    if (db) {
+      return db;
+    }
+    
+    // Fallback: try globalThis for local development
+    // @ts-ignore
+    if (globalThis.DB) {
+      // @ts-ignore
+      return globalThis.DB as D1Database;
+    }
+    
+    console.error('[DB Error] Database binding not found');
+    return null;
+  } catch (error) {
+    console.error('[DB Error] Failed to access database:', error);
+    return null;
+  }
 }
 
 // Helper function to parse JSON fields
@@ -52,8 +76,15 @@ export async function OPTIONS() {
 
 export async function GET(request: Request) {
   try {
-    const env = getEnv(request);
-    const db = env.DB as D1Database;
+    const db = getDB();
+    
+    if (!db) {
+      console.error('[GET] Database not available');
+      return NextResponse.json(
+        { error: 'Database not available', details: 'DB binding not found. Please check Cloudflare Pages bindings configuration.' },
+        { status: 500, headers: corsHeaders }
+      );
+    }
     
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
@@ -85,8 +116,16 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const env = getEnv(request);
-    const db = env.DB as D1Database;
+    const db = getDB();
+    
+    if (!db) {
+      console.error('[POST] Database not available');
+      return NextResponse.json(
+        { error: 'Database not available', details: 'DB binding not found. Please check Cloudflare Pages bindings configuration.' },
+        { status: 500, headers: corsHeaders }
+      );
+    }
+    
     const body = await request.json();
     const data = stringifyJsonFields(body);
     
@@ -121,8 +160,16 @@ export async function POST(request: Request) {
 
 export async function PUT(request: Request) {
   try {
-    const env = getEnv(request);
-    const db = env.DB as D1Database;
+    const db = getDB();
+    
+    if (!db) {
+      console.error('[PUT] Database not available');
+      return NextResponse.json(
+        { error: 'Database not available', details: 'DB binding not found. Please check Cloudflare Pages bindings configuration.' },
+        { status: 500, headers: corsHeaders }
+      );
+    }
+    
     const body = await request.json();
     const { id, ...updateData } = body as any;
     const data = stringifyJsonFields(updateData);

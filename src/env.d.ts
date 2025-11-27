@@ -1,7 +1,12 @@
 /// <reference types="@cloudflare/workers-types" />
 
-declare module '@cloudflare/next-on-pages' {
-  interface CloudflareEnv {
-    DB: D1Database;
+declare global {
+  namespace NodeJS {
+    interface ProcessEnv {
+      DB: D1Database;
+      [key: string]: string | undefined | D1Database;
+    }
   }
 }
+
+export {};
