@@ -6,6 +6,7 @@ async function main() {
   const profile = await prisma.profile.create({
     data: {
       name: '张三',
+      nameEn: 'Zhang San',
       title: '高级前端工程师',
       email: 'zhangsan@example.com',
       phone: '+86 138-0000-0000',
@@ -16,7 +17,7 @@ async function main() {
       linkedin: 'https://linkedin.com/in/yourusername',
       website: 'https://yourwebsite.com',
       blog: 'https://yourblog.com',
-      skills: [
+      skills: JSON.stringify([
         { name: 'React', level: 5, category: '前端' },
         { name: 'Next.js', level: 5, category: '前端' },
         { name: 'TypeScript', level: 5, category: '前端' },
@@ -27,8 +28,8 @@ async function main() {
         { name: 'Git', level: 5, category: '工具' },
         { name: 'Docker', level: 4, category: '工具' },
         { name: 'AWS', level: 3, category: '工具' },
-      ],
-      experiences: [
+      ]),
+      experiences: JSON.stringify([
         {
           id: '1',
           company: '某科技有限公司',
@@ -59,8 +60,8 @@ async function main() {
           ],
           technologies: ['Vue.js', 'JavaScript', 'Webpack', 'Element UI'],
         },
-      ],
-      education: [
+      ]),
+      education: JSON.stringify([
         {
           id: '1',
           school: '某大学',
@@ -71,8 +72,8 @@ async function main() {
           gpa: '3.7/4.0',
           description: '主修课程：数据结构、算法、操作系统、计算机网络、数据库原理',
         },
-      ],
-      projects: [
+      ]),
+      projects: JSON.stringify([
         {
           id: '1',
           name: '企业级管理系统',
@@ -103,8 +104,8 @@ async function main() {
             '支持多种支付方式集成',
           ],
         },
-      ],
-      certifications: [
+      ]),
+      certifications: JSON.stringify([
         {
           id: '1',
           name: 'AWS Certified Developer - Associate',
@@ -112,11 +113,11 @@ async function main() {
           date: '2022-08',
           url: 'https://aws.amazon.com/certification/',
         },
-      ],
-      languages: [
+      ]),
+      languages: JSON.stringify([
         { name: '中文', level: '母语' },
         { name: '英语', level: '流利' },
-      ],
+      ]),
     },
   });
 
