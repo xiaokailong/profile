@@ -94,3 +94,6 @@ export default function ProfilePage({ params }: ProfilePageProps) {
     </div>
   );
 }
+
+// Edge Runtime configuration for Cloudflare Pages
+export const runtime = 'edge';

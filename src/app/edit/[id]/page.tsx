@@ -110,3 +110,6 @@ export default function EditProfilePage({ params }: EditProfilePageProps) {
     </div>
   );
 }
+
+// Edge Runtime configuration for Cloudflare Pages
+export const runtime = 'edge';
