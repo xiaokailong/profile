@@ -1,6 +1,6 @@
 'use client';
 
-import { Card, Avatar, Tag, Space, Divider, Row, Col, Typography, Timeline, Progress } from 'antd';
+import { Card, Avatar, Tag, Space, Divider, Row, Col, Typography, Timeline, Progress, Statistic, Badge } from 'antd';
 import { 
   MailOutlined, 
   PhoneOutlined, 
@@ -10,9 +10,14 @@ import {
   GlobalOutlined,
   BookOutlined,
   TrophyOutlined,
-  CodeOutlined
+  CodeOutlined,
+  RocketOutlined,
+  TeamOutlined,
+  ClockCircleOutlined,
+  FireOutlined
 } from '@ant-design/icons';
 import { ProfileData, Experience, Education, Project, Skill } from '@/types/profile';
+import StatsOverview from './StatsOverview';
 
 const { Title, Paragraph, Text } = Typography;
 
@@ -44,7 +49,10 @@ export default function ProfileDisplay({ profile }: ProfileDisplayProps) {
             </Avatar>
           </Col>
           <Col xs={24} md={18}>
-            <Title level={2} style={{ color: 'white', marginTop: 0 }}>{profile.name}</Title>
+            <Title level={2} style={{ color: 'white', marginTop: 0 }}>
+              {profile.name}
+              {profile.nameEn && <Text style={{ color: '#f0f0f0', fontSize: '0.7em', marginLeft: 8 }}>({profile.nameEn})</Text>}
+            </Title>
             <Title level={4} style={{ color: '#f0f0f0', marginTop: 0 }}>{profile.title}</Title>
             <Space wrap style={{ color: 'white' }}>
               {profile.email && (
@@ -91,6 +99,9 @@ export default function ProfileDisplay({ profile }: ProfileDisplayProps) {
         </Row>
       </Card>
 
+      {/* 数据统计概览 */}
+      <StatsOverview profile={profile} />
+
       <Row gutter={24}>
         <Col xs={24} lg={16}>
           {/* 个人简介 */}
@@ -104,10 +115,15 @@ export default function ProfileDisplay({ profile }: ProfileDisplayProps) {
           {profile.experiences && profile.experiences.length > 0 && (
             <Card title={<><CodeOutlined /> 工作经历</>} style={{ marginBottom: 24 }}>
               <Timeline
-                items={profile.experiences.map((exp: Experience) => ({
+                items={profile.experiences.map((exp: Experience, index) => ({
+                  color: exp.current ? 'green' : 'blue',
+                  dot: exp.current ? <ClockCircleOutlined style={{ fontSize: '16px' }} /> : undefined,
                   children: (
                     <div key={exp.id}>
-                      <Title level={5}>{exp.position}</Title>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                        <Title level={5} style={{ margin: 0 }}>{exp.position}</Title>
+                        {exp.current && <Badge status="processing" text="在职" />}
+                      </div>
                       <Text strong>{exp.company}</Text>
                       <div>
                         <Text type="secondary">
@@ -210,13 +226,28 @@ export default function ProfileDisplay({ profile }: ProfileDisplayProps) {
             <Card title="技能" style={{ marginBottom: 24 }}>
               {Object.entries(skillsByCategory).map(([category, skills]) => (
                 <div key={category} style={{ marginBottom: 16 }}>
-                  <Title level={5}>{category}</Title>
+                  <Title level={5}>
+                    <Badge color="blue" />
+                    {category}
+                  </Title>
                   <Space direction="vertical" style={{ width: '100%' }}>
                     {skills.map((skill, idx) => (
                       <div key={idx}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                          <Text>{skill.name}</Text>
-                          <Text type="secondary">{skill.level}/5</Text>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+                          <Text strong>{skill.name}</Text>
+                          <Space>
+                            {[...Array(5)].map((_, i) => (
+                              <div
+                                key={i}
+                                style={{
+                                  width: 8,
+                                  height: 8,
+                                  borderRadius: '50%',
+                                  backgroundColor: i < skill.level ? '#1890ff' : '#d9d9d9',
+                                }}
+                              />
+                            ))}
+                          </Space>
                         </div>
                         <Progress 
                           percent={skill.level * 20} 
@@ -225,6 +256,7 @@ export default function ProfileDisplay({ profile }: ProfileDisplayProps) {
                             '0%': '#108ee9',
                             '100%': '#87d068',
                           }}
+                          strokeWidth={6}
                         />
                       </div>
                     ))}

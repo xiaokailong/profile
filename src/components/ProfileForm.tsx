@@ -107,6 +107,11 @@ export default function ProfileForm({ initialData, onSave, onCancel }: ProfileFo
             </Form.Item>
           </Col>
           <Col span={12}>
+            <Form.Item name="nameEn" label="英文名">
+              <Input placeholder="请输入英文名（选填）" />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
             <Form.Item name="title" label="职位/角色" rules={[{ required: true }]}>
               <Input placeholder="如: 高级前端工程师" />
             </Form.Item>

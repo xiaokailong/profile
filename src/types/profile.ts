@@ -56,6 +56,7 @@ export interface Language {
 export interface ProfileData {
   id: string;
   name: string;
+  nameEn?: string;
   title: string;
   email: string;
   phone?: string;

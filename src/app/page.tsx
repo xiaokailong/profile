@@ -1,17 +1,17 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Button, FloatButton, message, Spin } from 'antd';
-import { EditOutlined, EyeOutlined } from '@ant-design/icons';
+import { EditOutlined } from '@ant-design/icons';
 import ProfileDisplay from '@/components/ProfileDisplay';
-import ProfileForm from '@/components/ProfileForm';
 import PDFExport from '@/components/PDFExport';
 import { ProfileData } from '@/types/profile';
 
 export default function Home() {
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [editMode, setEditMode] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     fetchProfile();
@@ -20,6 +20,7 @@ export default function Home() {
   const fetchProfile = async () => {
     setLoading(true);
     try {
+      // 默认获取第一个简历（您的简历）
       const response = await fetch('/api/profile');
       if (response.ok) {
         const data = await response.json();
@@ -160,33 +161,6 @@ export default function Home() {
     message.info('数据库未配置，正在使用模拟数据预览');
   };
 
-  const handleSave = async (data: ProfileData) => {
-    try {
-      const method = profile?.id ? 'PUT' : 'POST';
-      const body = profile?.id ? { ...data, id: profile.id } : data;
-
-      const response = await fetch('/api/profile', {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(body),
-      });
-
-      if (response.ok) {
-        const savedProfile = await response.json();
-        setProfile(savedProfile);
-        setEditMode(false);
-        message.success('保存成功！');
-      } else {
-        throw new Error('保存失败');
-      }
-    } catch (error) {
-      console.error('保存失败:', error);
-      throw error;
-    }
-  };
-
   if (loading) {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
@@ -195,25 +169,11 @@ export default function Home() {
     );
   }
 
-  if (editMode) {
-    return (
-      <ProfileForm
-        initialData={profile || undefined}
-        onSave={handleSave}
-        onCancel={() => {
-          if (profile) {
-            setEditMode(false);
-          }
-        }}
-      />
-    );
-  }
-
   if (!profile) {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', flexDirection: 'column', gap: 16 }}>
         <h2>还没有个人信息</h2>
-        <Button type="primary" size="large" onClick={() => setEditMode(true)}>
+        <Button type="primary" size="large" onClick={() => router.push('/edit')}>
           创建个人信息
         </Button>
       </div>
@@ -224,13 +184,16 @@ export default function Home() {
     <div style={{ minHeight: '100vh', background: '#f0f2f5', padding: '24px 0' }}>
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 24px' }}>
         <div style={{ marginBottom: 24, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h1>个人简历</h1>
+          <div>
+            <h1>个人简历</h1>
+            <p style={{ color: '#666', fontSize: '14px' }}>简历 ID: {profile.id}</p>
+          </div>
           <div style={{ display: 'flex', gap: 8 }}>
             <PDFExport profile={profile} />
             <Button 
               type="primary" 
               icon={<EditOutlined />}
-              onClick={() => setEditMode(true)}
+              onClick={() => router.push(`/edit/${profile.id}`)}
             >
               编辑信息
             </Button>
