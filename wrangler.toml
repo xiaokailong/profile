@@ -17,3 +17,7 @@ NODE_VERSION = "18"
 # 构建配置
 [build]
 command = "npm install --legacy-peer-deps && npm run build"
+
+# 静态资源目录（Next.js 输出）
+[assets]
+directory = ".next/static"
