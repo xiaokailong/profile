@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -17,12 +17,13 @@ model Profile {
 
   // 基本信息
   name          String
+  nameEn        String? // 英文名
   title         String // 职位/角色
   email         String
   phone         String?
   location      String?
   avatar        String?
-  summary       String? @db.Text // 个人简介
+  summary       String? // 个人简介
 
   // 社交链接
   github        String?
@@ -31,18 +32,18 @@ model Profile {
   blog          String?
 
   // 技能
-  skills        Json? // 数组格式存储技能
+  skills        String? // 数组格式存储技能 (JSON string)
 
   // 工作经历
-  experiences   Json? // 数组格式存储工作经历
+  experiences   String? // 数组格式存储工作经历 (JSON string)
 
   // 教育背景
-  education     Json? // 数组格式存储教育经历
+  education     String? // 数组格式存储教育经历 (JSON string)
 
   // 项目经验
-  projects      Json? // 数组格式存储项目
+  projects      String? // 数组格式存储项目 (JSON string)
 
   // 其他
-  certifications Json? // 证书
-  languages      Json? // 语言能力
+  certifications String? // 证书 (JSON string)
+  languages      String? // 语言能力 (JSON string)
 }
