@@ -5,8 +5,6 @@
  * - CLOUDFLARE_API_TOKEN: Cloudflare API Token
  */
 
-import fetch from 'node-fetch';
-
 const ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID;
 const API_TOKEN = process.env.CLOUDFLARE_API_TOKEN;
 const DATABASE_ID = '4bb29d0b-79f9-4cb9-8f99-ea0a82810bf8';
@@ -64,7 +62,7 @@ async function initDatabase() {
 
     // 创建表
     console.log('📝 创建 Profile 表...');
-    const createResponse = await fetch(
+    const createResponse = await globalThis.fetch(
       `https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/d1/database/${DATABASE_ID}/query`,
       {
         method: 'POST',
@@ -86,7 +84,7 @@ async function initDatabase() {
 
     // 插入数据
     console.log('📝 插入默认数据...');
-    const insertResponse = await fetch(
+    const insertResponse = await globalThis.fetch(
       `https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/d1/database/${DATABASE_ID}/query`,
       {
         method: 'POST',
