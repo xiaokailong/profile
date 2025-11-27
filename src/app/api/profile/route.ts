@@ -1,5 +1,5 @@
-import { prisma } from '@/lib/prisma';
 import { NextResponse } from 'next/server';
+import { getRequestContext } from '@cloudflare/next-on-pages';
 
 // Edge Runtime configuration for Cloudflare Pages
 export const runtime = 'edge';
@@ -47,66 +47,110 @@ export async function OPTIONS() {
 
 export async function GET(request: Request) {
   try {
+    const { env } = getRequestContext();
+    const db = env.DB as D1Database;
+    
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
 
     if (id) {
       // 根据 ID 获取特定简历
-      const profile = await prisma.profile.findUnique({
-        where: { id }
-      });
+      const result = await db.prepare('SELECT * FROM Profile WHERE id = ?').bind(id).first();
       
-      if (!profile) {
+      if (!result) {
         return NextResponse.json({ error: 'Profile not found' }, { status: 404, headers: corsHeaders });
       }
 
-      return NextResponse.json(parseJsonFields(profile), { headers: corsHeaders });
+      return NextResponse.json(parseJsonFields(result), { headers: corsHeaders });
     } else {
-      // 默认返回第一个简历（您的简历）
-      const profile = await prisma.profile.findFirst({
-        orderBy: { createdAt: 'asc' }
-      });
+      // 默认返回第一个简历
+      const result = await db.prepare('SELECT * FROM Profile ORDER BY createdAt ASC LIMIT 1').first();
       
-      if (!profile) {
+      if (!result) {
         return NextResponse.json({ error: 'Profile not found' }, { status: 404, headers: corsHeaders });
       }
 
-      return NextResponse.json(parseJsonFields(profile), { headers: corsHeaders });
+      return NextResponse.json(parseJsonFields(result), { headers: corsHeaders });
     }
   } catch (error) {
     console.error('Error fetching profile:', error);
-    return NextResponse.json({ error: 'Failed to fetch profile' }, { status: 500, headers: corsHeaders });
+    return NextResponse.json({ error: 'Failed to fetch profile', details: String(error) }, { status: 500, headers: corsHeaders });
   }
 }
 
 export async function POST(request: Request) {
   try {
+    const { env } = getRequestContext();
+    const db = env.DB as D1Database;
     const body = await request.json();
+    const data = stringifyJsonFields(body);
     
-    const profile = await prisma.profile.create({
-      data: stringifyJsonFields(body)
-    });
+    await db.prepare(`
+      INSERT INTO Profile (id, name, nameEn, title, email, phone, location, summary, avatar, skills, experiences, education, projects, certifications, languages)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).bind(
+      data.id,
+      data.name,
+      data.nameEn || null,
+      data.title,
+      data.email,
+      data.phone,
+      data.location,
+      data.summary,
+      data.avatar || null,
+      data.skills,
+      data.experiences,
+      data.education,
+      data.projects,
+      data.certifications,
+      data.languages
+    ).run();
 
-    return NextResponse.json(parseJsonFields(profile), { headers: corsHeaders });
+    const result = await db.prepare('SELECT * FROM Profile WHERE id = ?').bind(data.id).first();
+    return NextResponse.json(parseJsonFields(result), { headers: corsHeaders });
   } catch (error) {
     console.error('Error creating profile:', error);
-    return NextResponse.json({ error: 'Failed to create profile' }, { status: 500, headers: corsHeaders });
+    return NextResponse.json({ error: 'Failed to create profile', details: String(error) }, { status: 500, headers: corsHeaders });
   }
 }
 
 export async function PUT(request: Request) {
   try {
+    const { env } = getRequestContext();
+    const db = env.DB as D1Database;
     const body = await request.json();
-    const { id, ...data } = body;
+    const { id, ...updateData } = body;
+    const data = stringifyJsonFields(updateData);
 
-    const profile = await prisma.profile.update({
-      where: { id },
-      data: stringifyJsonFields(data)
-    });
+    await db.prepare(`
+      UPDATE Profile SET 
+        name = ?, nameEn = ?, title = ?, email = ?, phone = ?, location = ?, summary = ?, avatar = ?,
+        skills = ?, experiences = ?, education = ?, projects = ?, certifications = ?, languages = ?,
+        updatedAt = CURRENT_TIMESTAMP
+      WHERE id = ?
+    `).bind(
+      data.name,
+      data.nameEn || null,
+      data.title,
+      data.email,
+      data.phone,
+      data.location,
+      data.summary,
+      data.avatar || null,
+      data.skills,
+      data.experiences,
+      data.education,
+      data.projects,
+      data.certifications,
+      data.languages,
+      id
+    ).run();
 
-    return NextResponse.json(parseJsonFields(profile), { headers: corsHeaders });
+    const result = await db.prepare('SELECT * FROM Profile WHERE id = ?').bind(id).first();
+    return NextResponse.json(parseJsonFields(result), { headers: corsHeaders });
   } catch (error) {
     console.error('Error updating profile:', error);
-    return NextResponse.json({ error: 'Failed to update profile' }, { status: 500, headers: corsHeaders });
+    return NextResponse.json({ error: 'Failed to update profile', details: String(error) }, { status: 500, headers: corsHeaders });
   }
 }
+
