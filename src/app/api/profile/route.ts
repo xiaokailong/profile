@@ -1,6 +1,9 @@
 import { prisma } from '@/lib/prisma';
 import { NextResponse } from 'next/server';
 
+// Edge Runtime configuration for Cloudflare Pages
+export const runtime = 'edge';
+
 // CORS headers
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
