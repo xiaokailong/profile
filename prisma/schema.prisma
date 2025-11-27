@@ -1,0 +1,48 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Profile {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // 基本信息
+  name          String
+  title         String // 职位/角色
+  email         String
+  phone         String?
+  location      String?
+  avatar        String?
+  summary       String? @db.Text // 个人简介
+
+  // 社交链接
+  github        String?
+  linkedin      String?
+  website       String?
+  blog          String?
+
+  // 技能
+  skills        Json? // 数组格式存储技能
+
+  // 工作经历
+  experiences   Json? // 数组格式存储工作经历
+
+  // 教育背景
+  education     Json? // 数组格式存储教育经历
+
+  // 项目经验
+  projects      Json? // 数组格式存储项目
+
+  // 其他
+  certifications Json? // 证书
+  languages      Json? // 语言能力
+}
