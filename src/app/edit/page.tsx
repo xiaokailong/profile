@@ -24,11 +24,17 @@ export default function CreateProfilePage() {
 
       if (response.ok) {
         const savedProfile = await response.json() as ProfileData;
-        message.success(`简历创建成功！您的简历 ID 是: ${savedProfile.id}`);
+        message.success(`简历创建成功！您的简历 ID 是: ${savedProfile.userId}`);
         setTimeout(() => {
-          router.push(`/profile/${savedProfile.id}`);
+          router.push(`/profile/${savedProfile.userId}`);
         }, 2000);
       } else {
+        const errorData = await response.json().catch(() => ({}));
+        if (response.status === 409) {
+          message.error('该简历 ID 已存在，请选择其他 ID');
+        } else {
+          message.error('创建失败');
+        }
         throw new Error('创建失败');
       }
     } catch (error) {

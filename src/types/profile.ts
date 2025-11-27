@@ -54,7 +54,8 @@ export interface Language {
 }
 
 export interface ProfileData {
-  id: string;
+  id: number; // Auto-increment primary key
+  userId: string; // User-friendly identifier for URL
   name: string;
   nameEn?: string;
   title: string;

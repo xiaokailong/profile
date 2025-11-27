@@ -101,6 +101,23 @@ export default function ProfileForm({ initialData, onSave, onCancel }: ProfileFo
     >
       <Card title="基本信息" style={{ marginBottom: 24 }}>
         <Row gutter={16}>
+          {!initialData && (
+            <Col span={24}>
+              <Form.Item 
+                name="userId" 
+                label="简历 ID" 
+                rules={[
+                  { required: true, message: '请输入简历 ID' },
+                  { pattern: /^[a-zA-Z0-9-_]+$/, message: '只能包含字母、数字、中划线和下划线' },
+                  { min: 3, message: '至少3个字符' },
+                  { max: 50, message: '最多50个字符' }
+                ]}
+                extra="这将成为您的个人简历访问地址，例如: /profile/your-id"
+              >
+                <Input placeholder="请输入简历 ID (如: zhang-san, john-doe)" />
+              </Form.Item>
+            </Col>
+          )}
           <Col span={12}>
             <Form.Item name="name" label="姓名" rules={[{ required: true }]}>
               <Input placeholder="请输入姓名" />

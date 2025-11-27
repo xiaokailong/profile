@@ -66,7 +66,7 @@ export default function Home() {
         <div style={{ marginBottom: 24, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
             <h1>个人简历</h1>
-            <p style={{ color: '#666', fontSize: '14px' }}>简历 ID: {profile.id}</p>
+            <p style={{ color: '#666', fontSize: '14px' }}>简历 ID: {profile.userId}</p>
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
             <PDFExport profile={profile} />

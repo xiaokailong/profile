@@ -87,16 +87,28 @@ export async function GET(request: Request) {
     }
     
     const { searchParams } = new URL(request.url);
+    const userId = searchParams.get('userId');
     const id = searchParams.get('id');
 
-    if (id) {
-      // 根据 ID 获取特定简历
-      const result = await db.prepare('SELECT * FROM Profile WHERE id = ?').bind(id).first();
+    if (userId) {
+      // 根据 userId 获取简历（用于公开访问 /profile/userId）
+      const result = await db.prepare('SELECT * FROM Profile WHERE userId = ?').bind(userId).first();
       
       if (!result) {
         return NextResponse.json({ error: 'Profile not found' }, { status: 404, headers: corsHeaders });
       }
 
+      console.log('[GET by userId] Found:', { id: result.id, userId: result.userId });
+      return NextResponse.json(parseJsonFields(result), { headers: corsHeaders });
+    } else if (id) {
+      // 根据 ID 获取简历（用于内部编辑 /edit/id）
+      const result = await db.prepare('SELECT * FROM Profile WHERE id = ?').bind(parseInt(id)).first();
+      
+      if (!result) {
+        return NextResponse.json({ error: 'Profile not found' }, { status: 404, headers: corsHeaders });
+      }
+
+      console.log('[GET by ID] Found:', { id: result.id, userId: result.userId });
       return NextResponse.json(parseJsonFields(result), { headers: corsHeaders });
     } else {
       // 默认返回第一个简历
@@ -106,6 +118,7 @@ export async function GET(request: Request) {
         return NextResponse.json({ error: 'Profile not found' }, { status: 404, headers: corsHeaders });
       }
 
+      console.log('[GET default] Found:', { id: result.id, userId: result.userId });
       return NextResponse.json(parseJsonFields(result), { headers: corsHeaders });
     }
   } catch (error) {
@@ -129,18 +142,24 @@ export async function POST(request: Request) {
     const body = await request.json();
     const data = stringifyJsonFields(body);
     
-    await db.prepare(`
-      INSERT INTO Profile (id, name, nameEn, title, email, phone, location, summary, avatar, skills, experiences, education, projects, certifications, languages)
+    // Check if userId already exists
+    const existing = await db.prepare('SELECT id FROM Profile WHERE userId = ?').bind(data.userId).first();
+    if (existing) {
+      return NextResponse.json({ error: 'userId already exists', details: 'Please choose a different userId' }, { status: 409, headers: corsHeaders });
+    }
+    
+    const insertResult = await db.prepare(`
+      INSERT INTO Profile (userId, name, nameEn, title, email, phone, location, summary, avatar, skills, experiences, education, projects, certifications, languages)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).bind(
-      data.id,
+      data.userId,
       data.name,
       data.nameEn || null,
       data.title,
       data.email,
-      data.phone,
-      data.location,
-      data.summary,
+      data.phone || null,
+      data.location || null,
+      data.summary || null,
       data.avatar || null,
       data.skills,
       data.experiences,
@@ -150,7 +169,9 @@ export async function POST(request: Request) {
       data.languages
     ).run();
 
-    const result = await db.prepare('SELECT * FROM Profile WHERE id = ?').bind(data.id).first();
+    // Get the newly created profile with auto-generated id
+    const result = await db.prepare('SELECT * FROM Profile WHERE id = ?').bind(insertResult.meta.last_row_id).first();
+    console.log('[POST] Created profile:', { id: result?.id, userId: result?.userId });
     return NextResponse.json(parseJsonFields(result), { headers: corsHeaders });
   } catch (error) {
     console.error('Error creating profile:', error);
@@ -174,6 +195,9 @@ export async function PUT(request: Request) {
     const { id, ...updateData } = body as any;
     const data = stringifyJsonFields(updateData);
 
+    // Ensure id is a number
+    const profileId = typeof id === 'number' ? id : parseInt(id as string);
+    
     await db.prepare(`
       UPDATE Profile SET 
         name = ?, nameEn = ?, title = ?, email = ?, phone = ?, location = ?, summary = ?, avatar = ?,
@@ -185,9 +209,9 @@ export async function PUT(request: Request) {
       data.nameEn || null,
       data.title,
       data.email,
-      data.phone,
-      data.location,
-      data.summary,
+      data.phone || null,
+      data.location || null,
+      data.summary || null,
       data.avatar || null,
       data.skills,
       data.experiences,
@@ -195,10 +219,11 @@ export async function PUT(request: Request) {
       data.projects,
       data.certifications,
       data.languages,
-      id
+      profileId
     ).run();
 
-    const result = await db.prepare('SELECT * FROM Profile WHERE id = ?').bind(id).first();
+    const result = await db.prepare('SELECT * FROM Profile WHERE id = ?').bind(profileId).first();
+    console.log('[PUT] Updated profile:', { id: result?.id, userId: result?.userId });
     return NextResponse.json(parseJsonFields(result), { headers: corsHeaders });
   } catch (error) {
     console.error('Error updating profile:', error);

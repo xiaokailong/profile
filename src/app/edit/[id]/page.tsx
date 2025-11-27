@@ -8,29 +8,50 @@ import ProfileForm from '@/components/ProfileForm';
 import { ProfileData } from '@/types/profile';
 
 interface EditProfilePageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export default function EditProfilePage({ params }: EditProfilePageProps) {
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [profileId, setProfileId] = useState<string>('');
   const router = useRouter();
-  const profileId = params.id;
 
   useEffect(() => {
-    fetchProfile();
+    // Next.js 15: params is a Promise
+    params.then((resolvedParams) => {
+      setProfileId(resolvedParams.id);
+    });
+  }, [params]);
+
+  useEffect(() => {
+    if (profileId) {
+      fetchProfile();
+    }
   }, [profileId]);
 
   const fetchProfile = async () => {
     setLoading(true);
     try {
+      console.log('[Edit Page] Fetching profile with id:', profileId);
       const response = await fetch(`/api/profile?id=${profileId}`);
       if (response.ok) {
         const data = await response.json() as ProfileData;
+        console.log('[Edit Page] Fetched data:', { id: data?.id, profileId });
+        
+        if (!data || !data.id) {
+          console.error('[Edit Page] Missing id in response:', data);
+          message.error('简历数据不完整');
+          setProfile(null);
+          return;
+        }
+        
         setProfile(data);
       } else {
+        const errorText = await response.text();
+        console.error('[Edit Page] Fetch failed:', response.status, errorText);
         setProfile(null);
       }
     } catch (error) {
@@ -48,14 +69,15 @@ export default function EditProfilePage({ params }: EditProfilePageProps) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ ...data, id: profileId }),
+        body: JSON.stringify({ ...data, id: parseInt(profileId) }),
       });
 
       if (response.ok) {
         const savedProfile = await response.json() as ProfileData;
         setProfile(savedProfile);
         message.success('保存成功！');
-        router.push(`/profile/${profileId}`);
+        // Navigate back to public profile page using userId
+        router.push(`/profile/${savedProfile.userId}`);
       } else {
         throw new Error('保存失败');
       }
@@ -104,7 +126,7 @@ export default function EditProfilePage({ params }: EditProfilePageProps) {
         <ProfileForm
           initialData={profile}
           onSave={handleSave}
-          onCancel={() => router.push(`/profile/${profileId}`)}
+          onCancel={() => router.push(`/profile/${profile.userId}`)}
         />
       </div>
     </div>
