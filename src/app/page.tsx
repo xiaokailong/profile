@@ -23,7 +23,7 @@ export default function Home() {
       // 默认获取第一个简历（数据库中的第一条记录）
       const response = await fetch('/api/profile');
       if (response.ok) {
-        const data = await response.json();
+        const data = await response.json() as ProfileData;
         setProfile(data);
       } else if (response.status === 404) {
         message.error('数据库中没有找到简历数据');

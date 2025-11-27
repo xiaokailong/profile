@@ -29,7 +29,7 @@ export default function ProfilePage({ params }: ProfilePageProps) {
     try {
       const response = await fetch(`/api/profile?id=${profileId}`);
       if (response.ok) {
-        const data = await response.json();
+        const data = await response.json() as ProfileData;
         setProfile(data);
       } else if (response.status === 404) {
         message.error('简历不存在');

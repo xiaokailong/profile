@@ -23,7 +23,7 @@ export default function CreateProfilePage() {
       });
 
       if (response.ok) {
-        const savedProfile = await response.json();
+        const savedProfile = await response.json() as ProfileData;
         message.success(`简历创建成功！您的简历 ID 是: ${savedProfile.id}`);
         setTimeout(() => {
           router.push(`/profile/${savedProfile.id}`);

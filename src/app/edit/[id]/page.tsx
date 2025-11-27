@@ -28,7 +28,7 @@ export default function EditProfilePage({ params }: EditProfilePageProps) {
     try {
       const response = await fetch(`/api/profile?id=${profileId}`);
       if (response.ok) {
-        const data = await response.json();
+        const data = await response.json() as ProfileData;
         setProfile(data);
       } else {
         setProfile(null);
@@ -52,7 +52,7 @@ export default function EditProfilePage({ params }: EditProfilePageProps) {
       });
 
       if (response.ok) {
-        const savedProfile = await response.json();
+        const savedProfile = await response.json() as ProfileData;
         setProfile(savedProfile);
         message.success('保存成功！');
         router.push(`/profile/${profileId}`);
