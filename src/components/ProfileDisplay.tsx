@@ -118,7 +118,7 @@ export default function ProfileDisplay({ profile }: ProfileDisplayProps) {
                   <span key={idx}>
                     <Text strong>{lang.name}</Text>
                     <Text type="secondary" style={{ float: 'right' }}> {lang.level}</Text>
-                    {idx < profile.languages.length - 1 && <Text type="secondary" style={{ margin: '0 8px' }}>|</Text>}
+                    {idx < (profile.languages?.length || 0) - 1 && <Text type="secondary" style={{ margin: '0 8px' }}>|</Text>}
                   </span>
                 ))}
               </Space>

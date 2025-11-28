@@ -40,6 +40,9 @@ export default function ProfileForm({ initialData, onSave, onCancel }: ProfileFo
       // 处理日期格式
       const processedValues = {
         ...values,
+        // 确保社交链接字段被明确包含
+        github: values.github || '',
+        website: values.website || '',
         // 将 Select(tags) 的字符串数组转换为对象数组以符合后端类型
         skills: values.skills?.map((name: string) => ({ name })),
         experiences: values.experiences?.map((exp: any) => ({
