@@ -40,6 +40,8 @@ export default function ProfileForm({ initialData, onSave, onCancel }: ProfileFo
       // 处理日期格式
       const processedValues = {
         ...values,
+        // 将 Select(tags) 的字符串数组转换为对象数组以符合后端类型
+        skills: values.skills?.map((name: string) => ({ name })),
         experiences: values.experiences?.map((exp: any) => ({
           ...exp,
           startDate: exp.startDate ? dayjs(exp.startDate).format('YYYY-MM') : '',
@@ -71,6 +73,8 @@ export default function ProfileForm({ initialData, onSave, onCancel }: ProfileFo
 
   const initialValues = initialData ? {
     ...initialData,
+    // 将技能对象映射为字符串数组以便 Select(tags) 正确回显
+    skills: initialData.skills?.map(s => s.name),
     experiences: initialData.experiences?.map(exp => ({
       ...exp,
       startDate: exp.startDate ? dayjs(exp.startDate, 'YYYY-MM') : null,

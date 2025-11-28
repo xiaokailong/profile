@@ -99,9 +99,9 @@ export default function StatsOverview({ profile }: StatsOverviewProps) {
           style={{ marginBottom: 24 }}
         >
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-            {profile.skills.map((skill, index) => (
+            {profile.skills.map((skill) => (
               <Tag 
-                key={index} 
+                key={skill.name} 
                 color="blue"
                 style={{ fontSize: '14px', padding: '4px 12px' }}
               >
