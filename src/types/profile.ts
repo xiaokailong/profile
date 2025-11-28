@@ -1,7 +1,3 @@
-export interface Skill {
-  name: string;
-}
-
 export interface Experience {
   id: string;
   company: string;
@@ -10,7 +6,7 @@ export interface Experience {
   endDate: string | null;
   current: boolean;
   description: string;
-  achievements: string[];
+  achievements: string; // 富文本内容
   technologies: string[];
 }
 
@@ -61,7 +57,7 @@ export interface ProfileData {
   summary?: string;
   github?: string;
   website?: string;
-  skills?: Skill[];
+  skills?: string; // 富文本内容
   experiences?: Experience[];
   education?: Education;
   projects?: Project[];

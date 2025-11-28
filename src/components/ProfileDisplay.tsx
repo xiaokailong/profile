@@ -1,6 +1,7 @@
 'use client';
 
 import { Card, Avatar, Tag, Space, Typography, Timeline, Badge } from 'antd';
+import './RichTextEditor.css';
 import { 
   MailOutlined, 
   PhoneOutlined, 
@@ -96,7 +97,11 @@ export default function ProfileDisplay({ profile }: ProfileDisplayProps) {
       {/* 个人简介 */}
       {profile.summary && (
         <Card title="个人简介" style={{ marginBottom: 24 }}>
-          <Paragraph style={{ fontSize: '15px', lineHeight: '1.8' }}>{profile.summary}</Paragraph>
+          <div 
+            className="rich-text-display" 
+            style={{ fontSize: '15px', lineHeight: '1.8' }}
+            dangerouslySetInnerHTML={{ __html: profile.summary }}
+          />
         </Card>
       )}
 
@@ -128,15 +133,12 @@ export default function ProfileDisplay({ profile }: ProfileDisplayProps) {
       ) : null}
 
       {/* 专业技能 */}
-      {profile.skills && profile.skills.length > 0 && (
+      {profile.skills && (
         <Card title="专业技能" style={{ marginBottom: 24 }}>
-          <Space wrap size="middle">
-            {profile.skills.map((skill, idx) => (
-              <Tag color="blue" key={idx} style={{ fontSize: '14px', padding: '6px 14px', margin: '4px' }}>
-                {typeof skill === 'string' ? skill : skill.name}
-              </Tag>
-            ))}
-          </Space>
+          <div 
+            className="rich-text-display"
+            dangerouslySetInnerHTML={{ __html: profile.skills }}
+          />
         </Card>
       )}
 
@@ -159,13 +161,21 @@ export default function ProfileDisplay({ profile }: ProfileDisplayProps) {
                       {exp.startDate} - {exp.current ? '至今' : exp.endDate}
                     </Text>
                   </div>
-                  <Paragraph style={{ marginTop: 8 }}>{exp.description}</Paragraph>
-                  {exp.achievements && exp.achievements.length > 0 && (
-                    <ul style={{ marginTop: 8 }}>
-                      {exp.achievements.map((achievement, idx) => (
-                        <li key={idx} style={{ marginBottom: 4 }}>{achievement}</li>
-                      ))}
-                    </ul>
+                  <Paragraph style={{ marginTop: 8 }}>
+                    <div 
+                      className="rich-text-display"
+                      dangerouslySetInnerHTML={{ __html: exp.description }}
+                    />
+                  </Paragraph>
+                  {exp.achievements && (
+                    <div style={{ marginTop: 8, padding: '8px 12px', background: '#fff', borderRadius: '4px', borderLeft: '3px solid #52c41a' }}>
+                      <Text type="secondary" style={{ fontSize: '13px' }}>主要成就：</Text>
+                      <div 
+                        className="rich-text-display" 
+                        style={{ marginTop: 4 }}
+                        dangerouslySetInnerHTML={{ __html: exp.achievements }}
+                      />
+                    </div>
                   )}
                   <Space wrap style={{ marginTop: 8 }}>
                     {exp.technologies.map((tech, idx) => (
@@ -192,11 +202,20 @@ export default function ProfileDisplay({ profile }: ProfileDisplayProps) {
                     {project.startDate} - {project.endDate || '至今'}
                   </Text>
                 </div>
-                <Paragraph style={{ marginTop: 8 }}>{project.description}</Paragraph>
+                <Paragraph style={{ marginTop: 8 }}>
+                  <div 
+                    className="rich-text-display"
+                    dangerouslySetInnerHTML={{ __html: project.description }}
+                  />
+                </Paragraph>
                 {project.highlights && (
                   <div style={{ marginTop: 8, padding: '8px 12px', background: '#fff', borderRadius: '4px', borderLeft: '3px solid #1890ff' }}>
                     <Text type="secondary" style={{ fontSize: '13px' }}>项目亮点：</Text>
-                    <Paragraph style={{ marginTop: 4, marginBottom: 0, whiteSpace: 'pre-wrap' }}>{project.highlights}</Paragraph>
+                    <div 
+                      className="rich-text-display" 
+                      style={{ marginTop: 4, marginBottom: 0 }}
+                      dangerouslySetInnerHTML={{ __html: project.highlights }}
+                    />
                   </div>
                 )}
                 <Space wrap style={{ marginTop: 8 }}>

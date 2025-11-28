@@ -91,26 +91,6 @@ export default function StatsOverview({ profile }: StatsOverviewProps) {
           </Card>
         </Col>
       </Row>
-
-      {/* 技能标签云 */}
-      {profile.skills && profile.skills.length > 0 && (
-        <Card 
-          title="技能标签" 
-          style={{ marginBottom: 24 }}
-        >
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-            {profile.skills.map((skill) => (
-              <Tag 
-                key={skill.name} 
-                color="blue"
-                style={{ fontSize: '14px', padding: '4px 12px' }}
-              >
-                {skill.name}
-              </Tag>
-            ))}
-          </div>
-        </Card>
-      )}
     </>
   );
 }

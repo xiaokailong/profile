@@ -20,6 +20,7 @@ import {
 import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
 import { ProfileData } from '@/types/profile';
 import dayjs from 'dayjs';
+import RichTextEditor from './RichTextEditor';
 
 const { TextArea } = Input;
 
@@ -43,8 +44,6 @@ export default function ProfileForm({ initialData, onSave, onCancel }: ProfileFo
         // 确保社交链接字段被明确包含
         github: values.github || '',
         website: values.website || '',
-        // 将 Select(tags) 的字符串数组转换为对象数组以符合后端类型
-        skills: values.skills?.map((name: string) => ({ name })),
         experiences: values.experiences?.map((exp: any) => ({
           ...exp,
           startDate: exp.startDate ? dayjs(exp.startDate).format('YYYY-MM') : '',
@@ -76,8 +75,6 @@ export default function ProfileForm({ initialData, onSave, onCancel }: ProfileFo
 
   const initialValues = initialData ? {
     ...initialData,
-    // 将技能对象映射为字符串数组以便 Select(tags) 正确回显
-    skills: initialData.skills?.map(s => s.name),
     experiences: initialData.experiences?.map(exp => ({
       ...exp,
       startDate: exp.startDate ? dayjs(exp.startDate, 'YYYY-MM') : null,
@@ -176,7 +173,7 @@ export default function ProfileForm({ initialData, onSave, onCancel }: ProfileFo
           </Col>
           <Col span={24}>
             <Form.Item name="summary" label="个人简介">
-              <TextArea rows={4} placeholder="简要介绍你的背景、专长和职业目标" />
+              <RichTextEditor placeholder="简要介绍你的背景、专长和职业目标" />
             </Form.Item>
           </Col>
         </Row>
@@ -229,17 +226,8 @@ export default function ProfileForm({ initialData, onSave, onCancel }: ProfileFo
       </Card>
 
       <Card title="专业技能" style={{ marginBottom: 24 }}>
-        <Form.Item 
-          name="skills" 
-          label="技能标签"
-          extra="输入技能名称后按回车键添加，如：React、Vue、Node.js 等"
-        >
-          <Select 
-            mode="tags" 
-            placeholder="请输入技能名称后按回车键添加"
-            style={{ width: '100%' }}
-            tokenSeparators={[',', '，']}
-          />
+        <Form.Item name="skills">
+          <RichTextEditor placeholder="描述你的专业技能、技术栈和擅长领域" />
         </Form.Item>
       </Card>
 
@@ -277,12 +265,12 @@ export default function ProfileForm({ initialData, onSave, onCancel }: ProfileFo
                     </Col>
                     <Col span={24}>
                       <Form.Item {...restField} name={[name, 'description']} label="工作描述">
-                        <TextArea rows={3} placeholder="描述你的工作职责" />
+                        <RichTextEditor placeholder="描述你的工作职责" />
                       </Form.Item>
                     </Col>
                     <Col span={24}>
                       <Form.Item {...restField} name={[name, 'achievements']} label="主要成就">
-                        <Select mode="tags" placeholder="输入后按回车添加" />
+                        <RichTextEditor placeholder="描述主要成就和业绩" />
                       </Form.Item>
                     </Col>
                     <Col span={24}>
@@ -333,12 +321,12 @@ export default function ProfileForm({ initialData, onSave, onCancel }: ProfileFo
                     </Col>
                     <Col span={24}>
                       <Form.Item {...restField} name={[name, 'description']} label="项目描述" rules={[{ required: true }]}>
-                        <TextArea rows={3} placeholder="描述项目背景和目标" />
+                        <RichTextEditor placeholder="描述项目背景和目标" />
                       </Form.Item>
                     </Col>
                     <Col span={24}>
                       <Form.Item {...restField} name={[name, 'highlights']} label="项目亮点">
-                        <TextArea rows={2} placeholder="描述项目的主要亮点和成果" />
+                        <RichTextEditor placeholder="描述项目的主要亮点和成果" />
                       </Form.Item>
                     </Col>
                     <Col span={24}>
