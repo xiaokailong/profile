@@ -31,9 +31,6 @@ export default function StatsOverview({ profile }: StatsOverviewProps) {
   const totalExperience = profile.experiences?.length || 0;
   const totalCertifications = profile.certifications?.length || 0;
 
-  // 获取高级技能（level >= 4）
-  const expertSkills = profile.skills?.filter(s => s.level >= 4) || [];
-
   return (
     <>
       {/* 主要统计数据 */}
@@ -93,34 +90,22 @@ export default function StatsOverview({ profile }: StatsOverviewProps) {
             />
           </Card>
         </Col>
-        <Col xs={12} sm={8} md={4}>
-          <Card>
-            <Statistic
-              title="精通技能"
-              value={expertSkills.length}
-              suffix="项"
-              prefix={<CodeOutlined />}
-              valueStyle={{ color: '#13c2c2', fontSize: '24px' }}
-            />
-          </Card>
-        </Col>
       </Row>
 
       {/* 技能标签云 */}
-      {expertSkills.length > 0 && (
+      {profile.skills && profile.skills.length > 0 && (
         <Card 
-          title="核心技能" 
+          title="技能标签" 
           style={{ marginBottom: 24 }}
-          extra={<Tag color="gold">精通</Tag>}
         >
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-            {expertSkills.map((skill, index) => (
+            {profile.skills.map((skill, index) => (
               <Tag 
                 key={index} 
-                color={skill.level === 5 ? 'gold' : 'blue'}
+                color="blue"
                 style={{ fontSize: '14px', padding: '4px 12px' }}
               >
-                {skill.name} {skill.level === 5 && '⭐'}
+                {skill.name}
               </Tag>
             ))}
           </div>
