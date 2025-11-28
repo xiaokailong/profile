@@ -27,47 +27,53 @@ export default function ProfileDisplay({ profile }: ProfileDisplayProps) {
   return (
     <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0' }}>
       {/* 头部个人信息卡片 */}
-      <Card style={{ marginBottom: 24, background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
+      <Card style={{ marginBottom: 24, background: '#ffff', borderRadius: 8 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 24, flexWrap: 'wrap' }}>
           {profile.avatar && (
             <Avatar 
-              size={120} 
+              size={{ xs: 100, sm: 113, md: 113, lg: 113, xl: 113, xxl: 113 }}
               src={profile.avatar}
-              style={{ border: '4px solid white' }}
+              style={{ 
+                border: '2px solid #d9d9d9',
+                width: '113px',
+                height: '151px',
+                borderRadius: '4px'
+              }}
+              shape="square"
             >
               {profile.name?.[0]}
             </Avatar>
           )}
           <div style={{ flex: 1 }}>
-            <Title level={2} style={{ color: 'white', marginTop: 0 }}>
+            <Title level={2} style={{ color: '#333', marginTop: 0 }}>
               {profile.name}
-              {profile.nameEn && <Text style={{ color: '#f0f0f0', fontSize: '0.7em', marginLeft: 8 }}>({profile.nameEn})</Text>}
+              {profile.nameEn && <Text style={{ color: '#333', fontSize: '0.7em', marginLeft: 8 }}>({profile.nameEn})</Text>}
             </Title>
-            <Title level={4} style={{ color: '#f0f0f0', marginTop: 0 }}>{profile.title}
+            <Title level={4} style={{ color: '#333', marginTop: 0 }}>{profile.title}
               {profile.gender && (
-                <Text style={{ color: 'white', marginLeft: 12 }}>
+                <Text style={{ color: '#333', marginLeft: 12 }}>
                   {profile.gender === '男' ? <ManOutlined /> : <WomanOutlined />} 
                   {profile.gender}
                 </Text>
               )}
               {profile.age && (
-                <Text style={{ color: 'white', marginLeft: 12 }}>
+                <Text style={{ color: '#333', marginLeft: 12 }}>
                   {profile.age}岁
                 </Text>
               )}</Title>
-            <Space wrap style={{ color: 'white' }}>
+            <Space wrap style={{ color: '#333' }}>
               {profile.email && (
-                <Text style={{ color: 'white' }}>
+                <Text style={{ color: '#333' }}>
                   <MailOutlined /> {profile.email}
                 </Text>
               )}
               {profile.phone && (
-                <Text style={{ color: 'white' }}>
+                <Text style={{ color: '#333' }}>
                   <PhoneOutlined /> {profile.phone}
                 </Text>
               )}
               {profile.location && (
-                <Text style={{ color: 'white' }}>
+                <Text style={{ color: '#333' }}>
                   <EnvironmentOutlined /> {profile.location}
                 </Text>
               )}
@@ -76,12 +82,12 @@ export default function ProfileDisplay({ profile }: ProfileDisplayProps) {
             <div style={{ marginTop: 12 }}>
               <Space wrap>
                 {profile.github && (
-                  <a href={profile.github} target="_blank" rel="noopener noreferrer" style={{ color: 'white' }}>
+                  <a href={profile.github} target="_blank" rel="noopener noreferrer" style={{ color: '#333' }}>
                     <GithubOutlined /> GitHub
                   </a>
                 )}
                 {profile.website && (
-                  <a href={profile.website} target="_blank" rel="noopener noreferrer" style={{ color: 'white' }}>
+                  <a href={profile.website} target="_blank" rel="noopener noreferrer" style={{ color: '#333' }}>
                     <GlobalOutlined /> 个人网站
                   </a>
                 )}
@@ -148,18 +154,16 @@ export default function ProfileDisplay({ profile }: ProfileDisplayProps) {
           <Timeline
             items={profile.experiences.map((exp: Experience) => ({
               color: exp.current ? 'green' : 'blue',
-              dot: exp.current ? <ClockCircleOutlined style={{ fontSize: '16px' }} /> : undefined,
-              children: (
+              icon: exp.current ? <ClockCircleOutlined style={{ fontSize: '16px' }} /> : undefined,
+              content: (
                 <div key={exp.id}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-                    <Title level={5} style={{ margin: 0 }}>{exp.position}</Title>
-                    {exp.current && <Badge status="processing" text="在职" />}
-                  </div>
-                  <Text strong style={{ fontSize: '15px' }}>{exp.company}</Text>
-                  <div>
+                    <Text strong style={{ margin: 0 }}>{exp.position}</Text> - 
+                    <Text strong style={{ fontSize: '15px' }}>{exp.company}</Text>
                     <Text type="secondary">
                       {exp.startDate} - {exp.current ? '至今' : exp.endDate}
                     </Text>
+                    {exp.current && <Badge status="processing" text="在职" />}
                   </div>
                   <Paragraph style={{ marginTop: 8 }}>
                     <div 
@@ -167,7 +171,7 @@ export default function ProfileDisplay({ profile }: ProfileDisplayProps) {
                       dangerouslySetInnerHTML={{ __html: exp.description }}
                     />
                   </Paragraph>
-                  {exp.achievements && (
+                  {/* {exp.achievements && (
                     <div style={{ marginTop: 8, padding: '8px 12px', background: '#fff', borderRadius: '4px', borderLeft: '3px solid #52c41a' }}>
                       <Text type="secondary" style={{ fontSize: '13px' }}>主要成就：</Text>
                       <div 
@@ -176,7 +180,7 @@ export default function ProfileDisplay({ profile }: ProfileDisplayProps) {
                         dangerouslySetInnerHTML={{ __html: exp.achievements }}
                       />
                     </div>
-                  )}
+                  )} */}
                   <Space wrap style={{ marginTop: 8 }}>
                     {exp.technologies.map((tech, idx) => (
                       <Tag color="blue" key={idx}>{tech}</Tag>
@@ -192,16 +196,19 @@ export default function ProfileDisplay({ profile }: ProfileDisplayProps) {
       {/* 项目经验 */}
       {profile.projects && profile.projects.length > 0 && (
         <Card title="项目经验" style={{ marginBottom: 24 }}>
-          <Space direction="vertical" style={{ width: '100%' }} size="large">
+          <Space orientation="vertical" style={{ width: '100%' }} size="large">
             {profile.projects.map((project: Project) => (
               <Card key={project.id} type="inner" style={{ background: '#fafafa' }}>
-                <Title level={5}>{project.name}</Title>
-                <Text strong style={{ color: '#1890ff' }}>{project.role}</Text>
-                <div>
-                  <Text type="secondary">
-                    {project.startDate} - {project.endDate || '至今'}
-                  </Text>
-                </div>
+                <Text strong>{project.name}</Text>
+                <Text strong style={{ color: '#1890ff', marginLeft: 8 }}>{project.role}</Text>
+                <Text type="secondary" style={{ marginLeft: 8 }}>
+                  {project.startDate} - {project.endDate || '至今'}
+                </Text>
+                {project.url && (
+                    <a href={project.url} target="_blank" rel="noopener noreferrer" style={{ float: 'right' }}>
+                      <GlobalOutlined /> 项目链接
+                    </a>
+                )}
                 <Paragraph style={{ marginTop: 8 }}>
                   <div 
                     className="rich-text-display"
@@ -218,18 +225,11 @@ export default function ProfileDisplay({ profile }: ProfileDisplayProps) {
                     />
                   </div>
                 )}
-                <Space wrap style={{ marginTop: 8 }}>
+                <Space wrap>
                   {project.technologies.map((tech, idx) => (
-                    <Tag color="green" key={idx}>{tech}</Tag>
+                    <Tag color="blue" key={idx}>{tech}</Tag>
                   ))}
                 </Space>
-                {project.url && (
-                  <div style={{ marginTop: 12 }}>
-                    <a href={project.url} target="_blank" rel="noopener noreferrer">
-                      <GlobalOutlined /> 项目链接
-                    </a>
-                  </div>
-                )}
               </Card>
             ))}
           </Space>
@@ -239,7 +239,7 @@ export default function ProfileDisplay({ profile }: ProfileDisplayProps) {
       {/* 证书与资质 */}
       {profile.certifications && profile.certifications.length > 0 && (
         <Card title="证书" style={{ marginBottom: 24 }}>
-          <Space direction="vertical" style={{ width: '100%' }} size="middle">
+          <Space orientation="vertical" style={{ width: '100%' }} size="middle">
             {profile.certifications.map((cert) => (
               <div key={cert.id} style={{ borderBottom: '1px dashed #e8e8e8', paddingBottom: 12 }}>
                 <Text strong style={{ fontSize: '15px' }}>{cert.name}</Text>

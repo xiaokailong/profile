@@ -102,7 +102,7 @@ export default function ProfileForm({ initialData, onSave, onCancel }: ProfileFo
       layout="vertical"
       onFinish={handleSubmit}
       initialValues={initialValues}
-      style={{ maxWidth: 1200, margin: '0 auto', padding: 24 }}
+      style={{ maxWidth: 1200, margin: '0 auto', padding: 0 }}
     >
       <Card title="基本信息" style={{ marginBottom: 24 }}>
         <Row gutter={16}>
@@ -268,11 +268,11 @@ export default function ProfileForm({ initialData, onSave, onCancel }: ProfileFo
                         <RichTextEditor placeholder="描述你的工作职责" />
                       </Form.Item>
                     </Col>
-                    <Col span={24}>
+                    {/* <Col span={24}>
                       <Form.Item {...restField} name={[name, 'achievements']} label="主要成就">
                         <RichTextEditor placeholder="描述主要成就和业绩" />
                       </Form.Item>
-                    </Col>
+                    </Col> */}
                     <Col span={24}>
                       <Form.Item {...restField} name={[name, 'technologies']} label="使用技术">
                         <Select mode="tags" placeholder="输入后按回车添加" />
