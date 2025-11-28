@@ -28,70 +28,83 @@ export default function ProfileDisplay({ profile }: ProfileDisplayProps) {
     <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0' }}>
       {/* 头部个人信息卡片 */}
       <Card style={{ marginBottom: 24, background: '#ffff', borderRadius: 8 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 24, flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 24, flexWrap: 'wrap' }}>
           {profile.avatar && (
-            <Avatar 
-              size={{ xs: 100, sm: 113, md: 113, lg: 113, xl: 113, xxl: 113 }}
+            <img 
               src={profile.avatar}
+              alt={profile.name}
+              crossOrigin="anonymous"
               style={{ 
                 border: '2px solid #d9d9d9',
                 width: '113px',
                 height: '151px',
-                borderRadius: '4px'
+                borderRadius: '4px',
+                flexShrink: 0,
+                objectFit: 'cover'
               }}
-              shape="square"
-            >
-              {profile.name?.[0]}
-            </Avatar>
+            />
           )}
-          <div style={{ flex: 1 }}>
-            <Title level={2} style={{ color: '#333', marginTop: 0 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <Title level={2} style={{ color: '#333', marginTop: 0, marginBottom: 8, lineHeight: 1.2 }}>
               {profile.name}
               {profile.nameEn && <Text style={{ color: '#333', fontSize: '0.7em', marginLeft: 8 }}>({profile.nameEn})</Text>}
             </Title>
-            <Title level={4} style={{ color: '#333', marginTop: 0 }}>{profile.title}
+            <div style={{ marginBottom: 12, lineHeight: 1.5 }}>
+              <Text strong style={{ fontSize: '16px', color: '#333' }}>{profile.title}</Text>
               {profile.gender && (
                 <Text style={{ color: '#333', marginLeft: 12 }}>
-                  {profile.gender === '男' ? <ManOutlined /> : <WomanOutlined />} 
-                  {profile.gender}
+                  <span style={{ verticalAlign: 'middle' }}>
+                    {profile.gender === '男' ? <ManOutlined style={{ marginRight: 4 }} /> : <WomanOutlined style={{ marginRight: 4 }} />}
+                    {profile.gender}
+                  </span>
                 </Text>
               )}
               {profile.age && (
                 <Text style={{ color: '#333', marginLeft: 12 }}>
                   {profile.age}岁
                 </Text>
-              )}</Title>
-            <Space wrap style={{ color: '#333' }}>
+              )}
+            </div>
+            <div style={{ marginBottom: 8 }}>
               {profile.email && (
-                <Text style={{ color: '#333' }}>
-                  <MailOutlined /> {profile.email}
-                </Text>
+                <div style={{ display: 'inline-block', marginRight: 16, marginBottom: 8 }}>
+                  <Text style={{ color: '#333' }}>
+                    <MailOutlined style={{ marginRight: 4, verticalAlign: 'middle' }} />
+                    <span style={{ verticalAlign: 'middle' }}>{profile.email}</span>
+                  </Text>
+                </div>
               )}
               {profile.phone && (
-                <Text style={{ color: '#333' }}>
-                  <PhoneOutlined /> {profile.phone}
-                </Text>
+                <div style={{ display: 'inline-block', marginRight: 16, marginBottom: 8 }}>
+                  <Text style={{ color: '#333' }}>
+                    <PhoneOutlined style={{ marginRight: 4, verticalAlign: 'middle' }} />
+                    <span style={{ verticalAlign: 'middle' }}>{profile.phone}</span>
+                  </Text>
+                </div>
               )}
               {profile.location && (
-                <Text style={{ color: '#333' }}>
-                  <EnvironmentOutlined /> {profile.location}
-                </Text>
+                <div style={{ display: 'inline-block', marginRight: 16, marginBottom: 8 }}>
+                  <Text style={{ color: '#333' }}>
+                    <EnvironmentOutlined style={{ marginRight: 4, verticalAlign: 'middle' }} />
+                    <span style={{ verticalAlign: 'middle' }}>{profile.location}</span>
+                  </Text>
+                </div>
               )}
-            </Space>
+            </div>
             {/* 社交链接 */}
-            <div style={{ marginTop: 12 }}>
-              <Space wrap>
-                {profile.github && (
-                  <a href={profile.github} target="_blank" rel="noopener noreferrer" style={{ color: '#333' }}>
-                    <GithubOutlined /> GitHub
-                  </a>
-                )}
-                {profile.website && (
-                  <a href={profile.website} target="_blank" rel="noopener noreferrer" style={{ color: '#333' }}>
-                    <GlobalOutlined /> 个人网站
-                  </a>
-                )}
-              </Space>
+            <div style={{ marginTop: 8 }}>
+              {profile.github && (
+                <a href={profile.github} target="_blank" rel="noopener noreferrer" style={{ color: '#262626', marginRight: 16, display: 'inline-block' }}>
+                  <GithubOutlined style={{ marginRight: 4, verticalAlign: 'middle' }} />
+                  <span style={{ verticalAlign: 'middle' }}>GitHub</span>
+                </a>
+              )}
+              {profile.website && (
+                <a href={profile.website} target="_blank" rel="noopener noreferrer" style={{ color: '#262626', display: 'inline-block' }}>
+                  <GlobalOutlined style={{ marginRight: 4, verticalAlign: 'middle' }} />
+                  <span style={{ verticalAlign: 'middle' }}>个人网站</span>
+                </a>
+              )}
             </div>
           </div>
         </div>
@@ -182,7 +195,7 @@ export default function ProfileDisplay({ profile }: ProfileDisplayProps) {
                     </div>
                   )} */}
                   <Space wrap style={{ marginTop: 8 }}>
-                    {exp.technologies.map((tech, idx) => (
+                    {exp.technologies && exp.technologies.map((tech, idx) => (
                       <Tag color="blue" key={idx}>{tech}</Tag>
                     ))}
                   </Space>
@@ -226,7 +239,7 @@ export default function ProfileDisplay({ profile }: ProfileDisplayProps) {
                   </div>
                 )}
                 <Space wrap>
-                  {project.technologies.map((tech, idx) => (
+                  {exp.technologies && project.technologies.map((tech, idx) => (
                     <Tag color="blue" key={idx}>{tech}</Tag>
                   ))}
                 </Space>

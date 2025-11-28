@@ -29,9 +29,11 @@ export default function PDFExport({ profile }: PDFExportProps) {
       // 使用html2canvas将内容转换为canvas
       const canvas = await html2canvas(printRef.current, {
         scale: 2,
-        useCORS: true,
+        useCORS: false,
+        allowTaint: true,
         logging: false,
         backgroundColor: '#ffffff',
+        imageTimeout: 0,
       });
 
       // 计算PDF页面尺寸
