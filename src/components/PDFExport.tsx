@@ -2,7 +2,7 @@
 
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-import { Button, Modal, Spin, message } from 'antd';
+import { Button, Modal, Spin, App } from 'antd';
 import { FilePdfOutlined, EyeOutlined } from '@ant-design/icons';
 import { useState, useRef } from 'react';
 import { ProfileData } from '@/types/profile';
@@ -17,6 +17,7 @@ export default function PDFExport({ profile }: PDFExportProps) {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string>('');
   const printRef = useRef<HTMLDivElement>(null);
+  const { message } = App.useApp();
 
   const generatePDF = async (preview: boolean = false) => {
     setLoading(true);

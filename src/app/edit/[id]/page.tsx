@@ -2,10 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button, message, Spin } from 'antd';
+import { Button, Spin, App } from 'antd';
 import { ArrowLeftOutlined, HomeOutlined } from '@ant-design/icons';
 import ProfileForm from '@/components/ProfileForm';
 import { ProfileData } from '@/types/profile';
+import { fetchAPI } from '@/lib/api';
 
 interface EditProfilePageProps {
   params: Promise<{
@@ -18,6 +19,7 @@ export default function EditProfilePage({ params }: EditProfilePageProps) {
   const [loading, setLoading] = useState(true);
   const [profileId, setProfileId] = useState<string>('');
   const router = useRouter();
+  const { message } = App.useApp();
 
   useEffect(() => {
     // Next.js 15: params is a Promise
@@ -36,7 +38,7 @@ export default function EditProfilePage({ params }: EditProfilePageProps) {
     setLoading(true);
     try {
       console.log('[Edit Page] Fetching profile with id:', profileId);
-      const response = await fetch(`/api/profile?id=${profileId}`);
+      const response = await fetchAPI(`/api/profile?id=${profileId}`);
       if (response.ok) {
         const data = await response.json() as ProfileData;
         console.log('[Edit Page] Fetched data:', { id: data?.id, profileId });
@@ -64,11 +66,8 @@ export default function EditProfilePage({ params }: EditProfilePageProps) {
 
   const handleSave = async (data: ProfileData) => {
     try {
-      const response = await fetch('/api/profile', {
+      const response = await fetchAPI('/api/profile', {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify({ ...data, id: parseInt(profileId) }),
       });
 

@@ -1,30 +1,118 @@
 # 执行数据库迁移 - 快速指南
 
-## 立即执行迁移
+## 最新迁移记录（2025-11-28）
+
+### ✅ 0005_fields_update.sql - 已完成本地迁移
+
+**迁移内容：**
+- phone 字段改为必填
+- Certification 移除 issuer 字段
+- Project 移除 github 字段，highlights 从数组改为文本
+- Education 从数组改为单个对象
+
+**本地数据库状态：** ✅ 已成功应用所有迁移（0001-0005）
+
+**远程数据库状态：** ⏳ 待执行（需要 Cloudflare 认证）
+
+---
+
+## 立即执行远程迁移
 
 ### 方法 1: 使用 Wrangler CLI（推荐）
 
 ```bash
 # 1. 确保已登录 Cloudflare
-wrangler login
+npx wrangler login
 
-# 2. 执行迁移脚本
-wrangler d1 execute profile-db --remote --file=./migrations/0002_add_user_id.sql
+# 2. 查看待执行的迁移
+npx wrangler d1 migrations list profile-db --remote
 
-# 3. 验证迁移成功
-wrangler d1 execute profile-db --remote --command="PRAGMA table_info(Profile);"
+# 3. 应用所有待执行的迁移（包括 0005_fields_update.sql）
+npx wrangler d1 migrations apply profile-db --remote
 
-# 4. 查看迁移后的数据
-wrangler d1 execute profile-db --remote --command="SELECT id, userId, name, email FROM Profile;"
+# 4. 验证迁移成功
+npx wrangler d1 execute profile-db --remote --command="SELECT name FROM d1_migrations ORDER BY id DESC LIMIT 5"
+
+# 5. 查看迁移后的数据示例
+npx wrangler d1 execute profile-db --remote --command="SELECT id, userId, name, email, phone FROM Profile LIMIT 1"
 ```
+
+**注意：** 如果遇到网络认证问题，请使用方法 2 或方法 3。
 
 ### 方法 2: 在 Cloudflare Dashboard 执行
 
 1. 访问: https://dash.cloudflare.com
-2. 进入: **Workers & Pages** > **D1** > **profile-db**
+2. 进入: **Workers & Pages** > **D1** > **profile-db** (4bb29d0b-79f9-4cb9-8f99-ea0a82810bf8)
 3. 点击: **Console** 标签
-4. 复制 `migrations/0002_add_user_id.sql` 的内容
-5. 粘贴到控制台并执行
+4. 执行以下 SQL（来自 `migrations/0005_fields_update.sql`）：
+
+```sql
+-- 清理 certifications 中的 issuer 字段
+UPDATE Profile 
+SET certifications = (
+  SELECT json_group_array(
+    json_object(
+      'id', json_extract(value, '$.id'),
+      'name', json_extract(value, '$.name'),
+      'date', json_extract(value, '$.date'),
+      'url', json_extract(value, '$.url')
+    )
+  )
+  FROM json_each(certifications)
+)
+WHERE certifications IS NOT NULL AND certifications != '[]';
+
+-- 清理 projects 中的 github 字段，并将 highlights 数组转为字符串
+UPDATE Profile 
+SET projects = (
+  SELECT json_group_array(
+    json_object(
+      'id', json_extract(value, '$.id'),
+      'name', json_extract(value, '$.name'),
+      'description', json_extract(value, '$.description'),
+      'role', json_extract(value, '$.role'),
+      'startDate', json_extract(value, '$.startDate'),
+      'endDate', json_extract(value, '$.endDate'),
+      'technologies', json_extract(value, '$.technologies'),
+      'url', json_extract(value, '$.url'),
+      'highlights', CASE 
+        WHEN json_type(json_extract(value, '$.highlights')) = 'array' 
+        THEN (
+          SELECT group_concat(json_extract(h.value, '$'), char(10))
+          FROM json_each(json_extract(value, '$.highlights')) h
+        )
+        ELSE json_extract(value, '$.highlights')
+      END
+    )
+  )
+  FROM json_each(projects)
+)
+WHERE projects IS NOT NULL AND projects != '[]';
+
+-- 将 education 从数组格式转为单个对象
+UPDATE Profile 
+SET education = json_extract(education, '$[0]') 
+WHERE education IS NOT NULL 
+  AND education != '[]' 
+  AND json_type(education) = 'array';
+```
+
+5. 执行成功后，验证数据：
+```sql
+SELECT id, certifications, projects, education FROM Profile LIMIT 1;
+```
+
+### 方法 3: 通过部署自动执行
+
+迁移文件已提交到仓库，下次部署时会自动应用：
+
+```powershell
+git add .
+git commit -m "chore: database migration 0005 - fields update"
+git push
+```
+
+Cloudflare Pages 会自动检测并应用新迁移。
 
 ## 迁移后测试
 

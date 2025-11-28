@@ -2,11 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button, FloatButton, message, Spin } from 'antd';
+import { Button, FloatButton, Spin, App } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
 import ProfileDisplay from '@/components/ProfileDisplay';
 import PDFExport from '@/components/PDFExport';
 import { ProfileData } from '@/types/profile';
+import { fetchAPI } from '@/lib/api';
 
 interface ProfilePageProps {
   params: Promise<{
@@ -19,6 +20,7 @@ export default function ProfilePage({ params }: ProfilePageProps) {
   const [loading, setLoading] = useState(true);
   const [profileId, setProfileId] = useState<string>('');
   const router = useRouter();
+  const { message } = App.useApp();
 
   useEffect(() => {
     // Next.js 15: params is a Promise
@@ -37,7 +39,7 @@ export default function ProfilePage({ params }: ProfilePageProps) {
     setLoading(true);
     try {
       // Use userId for fetching (public URL)
-      const response = await fetch(`/api/profile?userId=${profileId}`);
+      const response = await fetchAPI(`/api/profile?userId=${profileId}`);
       if (response.ok) {
         const data = await response.json() as ProfileData;
         console.log('[Profile Page] Fetched data:', { id: data?.id, userId: data?.userId, profileId });

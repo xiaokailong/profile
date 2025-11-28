@@ -17,19 +17,18 @@ model Profile {
 
   // 基本信息
   name          String
-  nameEn        String? // 英文名
+  nameEn        String? // 英文名/拼音
   title         String // 职位/角色
   email         String
-  phone         String?
+  phone         String  // 电话（必填）
   location      String?
+  gender        String // 性别：男、女
   avatar        String?
   summary       String? // 个人简介
 
   // 社交链接
   github        String?
-  linkedin      String?
   website       String?
-  blog          String?
 
   // 技能
   skills        String? // 数组格式存储技能 (JSON string)
@@ -37,8 +36,8 @@ model Profile {
   // 工作经历
   experiences   String? // 数组格式存储工作经历 (JSON string)
 
-  // 教育背景
-  education     String? // 数组格式存储教育经历 (JSON string)
+  // 最高学历背景
+  education     String? // 单个对象存储教育经历 (JSON string)
 
   // 项目经验
   projects      String? // 数组格式存储项目 (JSON string)

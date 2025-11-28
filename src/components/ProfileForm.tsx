@@ -9,12 +9,13 @@ import {
   Card, 
   Row, 
   Col,
-  message,
+  App,
   InputNumber,
   Select,
   DatePicker,
   Switch,
-  Divider
+  Divider,
+  AutoComplete
 } from 'antd';
 import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
 import { ProfileData } from '@/types/profile';
@@ -31,6 +32,7 @@ interface ProfileFormProps {
 export default function ProfileForm({ initialData, onSave, onCancel }: ProfileFormProps) {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
+  const { message } = App.useApp();
 
   const handleSubmit = async (values: any) => {
     setLoading(true);
@@ -43,11 +45,11 @@ export default function ProfileForm({ initialData, onSave, onCancel }: ProfileFo
           startDate: exp.startDate ? dayjs(exp.startDate).format('YYYY-MM') : '',
           endDate: exp.endDate ? dayjs(exp.endDate).format('YYYY-MM') : null,
         })),
-        education: values.education?.map((edu: any) => ({
-          ...edu,
-          startDate: edu.startDate ? dayjs(edu.startDate).format('YYYY-MM') : '',
-          endDate: edu.endDate ? dayjs(edu.endDate).format('YYYY-MM') : '',
-        })),
+        education: values.education ? {
+          ...values.education,
+          startDate: values.education.startDate ? dayjs(values.education.startDate).format('YYYY-MM') : '',
+          endDate: values.education.endDate ? dayjs(values.education.endDate).format('YYYY-MM') : '',
+        } : undefined,
         projects: values.projects?.map((proj: any) => ({
           ...proj,
           startDate: proj.startDate ? dayjs(proj.startDate).format('YYYY-MM') : '',
@@ -75,11 +77,11 @@ export default function ProfileForm({ initialData, onSave, onCancel }: ProfileFo
       startDate: exp.startDate ? dayjs(exp.startDate, 'YYYY-MM') : null,
       endDate: exp.endDate ? dayjs(exp.endDate, 'YYYY-MM') : null,
     })),
-    education: initialData.education?.map(edu => ({
-      ...edu,
-      startDate: edu.startDate ? dayjs(edu.startDate, 'YYYY-MM') : null,
-      endDate: edu.endDate ? dayjs(edu.endDate, 'YYYY-MM') : null,
-    })),
+    education: initialData.education ? {
+      ...initialData.education,
+      startDate: initialData.education.startDate ? dayjs(initialData.education.startDate, 'YYYY-MM') : null,
+      endDate: initialData.education.endDate ? dayjs(initialData.education.endDate, 'YYYY-MM') : null,
+    } : undefined,
     projects: initialData.projects?.map(proj => ({
       ...proj,
       startDate: proj.startDate ? dayjs(proj.startDate, 'YYYY-MM') : null,
@@ -124,8 +126,8 @@ export default function ProfileForm({ initialData, onSave, onCancel }: ProfileFo
             </Form.Item>
           </Col>
           <Col span={12}>
-            <Form.Item name="nameEn" label="英文名">
-              <Input placeholder="请输入英文名（选填）" />
+            <Form.Item name="nameEn" label="英文名/拼音">
+              <Input placeholder="请输入英文名或拼音（选填）" />
             </Form.Item>
           </Col>
           <Col span={12}>
@@ -139,13 +141,21 @@ export default function ProfileForm({ initialData, onSave, onCancel }: ProfileFo
             </Form.Item>
           </Col>
           <Col span={12}>
-            <Form.Item name="phone" label="电话">
+            <Form.Item name="phone" label="电话" rules={[{ required: true, message: '请输入电话' }]}>
               <Input placeholder="请输入电话" />
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item name="location" label="所在地">
               <Input placeholder="如: 北京市朝阳区" />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item name="gender" label="性别" rules={[{ required: true, message: '请选择性别' }]}>
+              <Select placeholder="请选择性别">
+                <Select.Option value="男">男</Select.Option>
+                <Select.Option value="女">女</Select.Option>
+              </Select>
             </Form.Item>
           </Col>
           <Col span={12}>
@@ -161,6 +171,37 @@ export default function ProfileForm({ initialData, onSave, onCancel }: ProfileFo
         </Row>
       </Card>
 
+      {/* 最高学历背景 */}
+      <Card title="最高学历背景" style={{ marginBottom: 24 }}>
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item name={['education', 'school']} label="学校">
+              <Input placeholder="学校名称" />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item name={['education', 'degree']} label="学位">
+              <Input placeholder="如: 本科、硕士" />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item name={['education', 'major']} label="专业">
+              <Input placeholder="专业名称" />
+            </Form.Item>
+          </Col>
+          <Col span={6}>
+            <Form.Item name={['education', 'startDate']} label="开始时间">
+              <DatePicker picker="month" style={{ width: '100%' }} placeholder="选择日期" />
+            </Form.Item>
+          </Col>
+          <Col span={6}>
+            <Form.Item name={['education', 'endDate']} label="结束时间">
+              <DatePicker picker="month" style={{ width: '100%' }} placeholder="选择日期" />
+            </Form.Item>
+          </Col>
+        </Row>
+      </Card>
+
       <Card title="社交链接" style={{ marginBottom: 24 }}>
         <Row gutter={16}>
           <Col span={12}>
@@ -169,63 +210,26 @@ export default function ProfileForm({ initialData, onSave, onCancel }: ProfileFo
             </Form.Item>
           </Col>
           <Col span={12}>
-            <Form.Item name="linkedin" label="LinkedIn">
-              <Input placeholder="https://linkedin.com/in/username" />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
             <Form.Item name="website" label="个人网站">
               <Input placeholder="https://yourwebsite.com" />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item name="blog" label="博客">
-              <Input placeholder="https://yourblog.com" />
             </Form.Item>
           </Col>
         </Row>
       </Card>
 
-      <Card title="技能" style={{ marginBottom: 24 }}>
-        <Form.List name="skills">
-          {(fields, { add, remove }) => (
-            <>
-              {fields.map(({ key, name, ...restField }) => (
-                <Row key={key} gutter={16} align="middle">
-                  <Col span={8}>
-                    <Form.Item {...restField} name={[name, 'name']} rules={[{ required: true }]}>
-                      <Input placeholder="技能名称" />
-                    </Form.Item>
-                  </Col>
-                  <Col span={8}>
-                    <Form.Item {...restField} name={[name, 'category']} rules={[{ required: true }]}>
-                      <Select placeholder="分类">
-                        <Select.Option value="前端">前端</Select.Option>
-                        <Select.Option value="后端">后端</Select.Option>
-                        <Select.Option value="数据库">数据库</Select.Option>
-                        <Select.Option value="工具">工具</Select.Option>
-                        <Select.Option value="其他">其他</Select.Option>
-                      </Select>
-                    </Form.Item>
-                  </Col>
-                  <Col span={6}>
-                    <Form.Item {...restField} name={[name, 'level']} rules={[{ required: true }]}>
-                      <InputNumber min={1} max={5} placeholder="熟练度(1-5)" style={{ width: '100%' }} />
-                    </Form.Item>
-                  </Col>
-                  <Col span={2}>
-                    <MinusCircleOutlined onClick={() => remove(name)} />
-                  </Col>
-                </Row>
-              ))}
-              <Form.Item>
-                <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
-                  添加技能
-                </Button>
-              </Form.Item>
-            </>
-          )}
-        </Form.List>
+      <Card title="专业技能" style={{ marginBottom: 24 }}>
+        <Form.Item 
+          name="skills" 
+          label="技能标签"
+          extra="输入技能名称后按回车键添加，如：React、Vue、Node.js 等"
+        >
+          <Select 
+            mode="tags" 
+            placeholder="请输入技能名称后按回车键添加"
+            style={{ width: '100%' }}
+            tokenSeparators={[',', '，']}
+          />
+        </Form.Item>
       </Card>
 
       <Card title="工作经历" style={{ marginBottom: 24 }}>
@@ -323,7 +327,7 @@ export default function ProfileForm({ initialData, onSave, onCancel }: ProfileFo
                     </Col>
                     <Col span={24}>
                       <Form.Item {...restField} name={[name, 'highlights']} label="项目亮点">
-                        <Select mode="tags" placeholder="输入后按回车添加" />
+                        <TextArea rows={2} placeholder="描述项目的主要亮点和成果" />
                       </Form.Item>
                     </Col>
                     <Col span={24}>
@@ -331,14 +335,9 @@ export default function ProfileForm({ initialData, onSave, onCancel }: ProfileFo
                         <Select mode="tags" placeholder="输入后按回车添加" />
                       </Form.Item>
                     </Col>
-                    <Col span={12}>
+                    <Col span={24}>
                       <Form.Item {...restField} name={[name, 'url']} label="项目链接">
                         <Input placeholder="https://..." />
-                      </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                      <Form.Item {...restField} name={[name, 'github']} label="GitHub">
-                        <Input placeholder="https://github.com/..." />
                       </Form.Item>
                     </Col>
                   </Row>
@@ -355,86 +354,25 @@ export default function ProfileForm({ initialData, onSave, onCancel }: ProfileFo
         </Form.List>
       </Card>
 
-      <Card title="教育背景" style={{ marginBottom: 24 }}>
-        <Form.List name="education">
-          {(fields, { add, remove }) => (
-            <>
-              {fields.map(({ key, name, ...restField }) => (
-                <Card key={key} type="inner" style={{ marginBottom: 16 }}>
-                  <Row gutter={16}>
-                    <Col span={12}>
-                      <Form.Item {...restField} name={[name, 'school']} label="学校" rules={[{ required: true }]}>
-                        <Input placeholder="学校名称" />
-                      </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                      <Form.Item {...restField} name={[name, 'degree']} label="学位" rules={[{ required: true }]}>
-                        <Input placeholder="如: 本科" />
-                      </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                      <Form.Item {...restField} name={[name, 'major']} label="专业" rules={[{ required: true }]}>
-                        <Input placeholder="专业名称" />
-                      </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                      <Form.Item {...restField} name={[name, 'gpa']} label="GPA">
-                        <Input placeholder="如: 3.8/4.0" />
-                      </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                      <Form.Item {...restField} name={[name, 'startDate']} label="开始时间" rules={[{ required: true }]}>
-                        <DatePicker picker="month" style={{ width: '100%' }} />
-                      </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                      <Form.Item {...restField} name={[name, 'endDate']} label="结束时间" rules={[{ required: true }]}>
-                        <DatePicker picker="month" style={{ width: '100%' }} />
-                      </Form.Item>
-                    </Col>
-                    <Col span={24}>
-                      <Form.Item {...restField} name={[name, 'description']} label="描述">
-                        <TextArea rows={2} placeholder="相关课程、荣誉等" />
-                      </Form.Item>
-                    </Col>
-                  </Row>
-                  <Button danger onClick={() => remove(name)}>删除此条</Button>
-                </Card>
-              ))}
-              <Form.Item>
-                <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
-                  添加教育背景
-                </Button>
-              </Form.Item>
-            </>
-          )}
-        </Form.List>
-      </Card>
-
       <Card title="证书与资质" style={{ marginBottom: 24 }}>
         <Form.List name="certifications">
           {(fields, { add, remove }) => (
             <>
               {fields.map(({ key, name, ...restField }) => (
                 <Row key={key} gutter={16} align="middle">
-                  <Col span={7}>
+                  <Col span={9}>
                     <Form.Item {...restField} name={[name, 'name']} rules={[{ required: true }]}>
                       <Input placeholder="证书名称" />
                     </Form.Item>
                   </Col>
                   <Col span={6}>
-                    <Form.Item {...restField} name={[name, 'issuer']} rules={[{ required: true }]}>
-                      <Input placeholder="颁发机构" />
-                    </Form.Item>
-                  </Col>
-                  <Col span={5}>
                     <Form.Item {...restField} name={[name, 'date']} rules={[{ required: true }]}>
                       <DatePicker picker="month" style={{ width: '100%' }} />
                     </Form.Item>
                   </Col>
-                  <Col span={5}>
+                  <Col span={8}>
                     <Form.Item {...restField} name={[name, 'url']}>
-                      <Input placeholder="证书链接" />
+                      <Input placeholder="证书链接（选填）" />
                     </Form.Item>
                   </Col>
                   <Col span={1}>
@@ -465,12 +403,16 @@ export default function ProfileForm({ initialData, onSave, onCancel }: ProfileFo
                   </Col>
                   <Col span={11}>
                     <Form.Item {...restField} name={[name, 'level']} rules={[{ required: true }]}>
-                      <Select placeholder="水平">
-                        <Select.Option value="母语">母语</Select.Option>
-                        <Select.Option value="流利">流利</Select.Option>
-                        <Select.Option value="工作语言">工作语言</Select.Option>
-                        <Select.Option value="基础">基础</Select.Option>
-                      </Select>
+                      <AutoComplete
+                        placeholder="水平（可选择或手动输入）"
+                        options={[
+                          { value: '母语' },
+                          { value: '流利' },
+                          { value: '熟练' },
+                          { value: '工作语言' },
+                          { value: '基础' }
+                        ]}
+                      />
                     </Form.Item>
                   </Col>
                   <Col span={2}>

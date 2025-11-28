@@ -2,16 +2,18 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button, FloatButton, message, Spin } from 'antd';
+import { Button, FloatButton, Spin, App } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
 import ProfileDisplay from '@/components/ProfileDisplay';
 import PDFExport from '@/components/PDFExport';
 import { ProfileData } from '@/types/profile';
+import { fetchAPI } from '@/lib/api';
 
 export default function Home() {
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const { message: messageApi } = App.useApp();
 
   useEffect(() => {
     fetchProfile();
@@ -21,20 +23,20 @@ export default function Home() {
     setLoading(true);
     try {
       // 默认获取第一个简历（数据库中的第一条记录）
-      const response = await fetch('/api/profile');
+      const response = await fetchAPI('/api/profile');
       if (response.ok) {
         const data = await response.json() as ProfileData;
         setProfile(data);
       } else if (response.status === 404) {
-        message.error('数据库中没有找到简历数据');
+        messageApi.error('数据库中没有找到简历数据');
         setProfile(null);
       } else {
-        message.error('获取简历失败');
+        messageApi.error('获取简历失败');
         setProfile(null);
       }
     } catch (error) {
       console.error('获取个人信息失败:', error);
-      message.error('无法连接到数据库');
+      messageApi.error('无法连接到数据库');
       setProfile(null);
     } finally {
       setLoading(false);

@@ -2,23 +2,22 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button, message, Input, Card } from 'antd';
+import { Button, Input, Card, App } from 'antd';
 import { HomeOutlined, PlusOutlined } from '@ant-design/icons';
 import ProfileForm from '@/components/ProfileForm';
 import { ProfileData } from '@/types/profile';
+import { fetchAPI } from '@/lib/api';
 
 export default function CreateProfilePage() {
   const [step, setStep] = useState<'input' | 'form'>('input');
   const [profileId, setProfileId] = useState('');
   const router = useRouter();
+  const { message } = App.useApp();
 
   const handleCreate = async (data: ProfileData) => {
     try {
-      const response = await fetch('/api/profile', {
+      const response = await fetchAPI('/api/profile', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify(data),
       });
 

@@ -1,7 +1,5 @@
 export interface Skill {
   name: string;
-  level: number; // 1-5
-  category: string; // e.g., "前端", "后端", "工具"
 }
 
 export interface Experience {
@@ -17,14 +15,11 @@ export interface Experience {
 }
 
 export interface Education {
-  id: string;
   school: string;
   degree: string;
   major: string;
   startDate: string;
   endDate: string;
-  gpa?: string;
-  description?: string;
 }
 
 export interface Project {
@@ -36,14 +31,12 @@ export interface Project {
   endDate: string | null;
   technologies: string[];
   url?: string;
-  github?: string;
-  highlights: string[];
+  highlights?: string;
 }
 
 export interface Certification {
   id: string;
   name: string;
-  issuer: string;
   date: string;
   url?: string;
 }
@@ -60,17 +53,16 @@ export interface ProfileData {
   nameEn?: string;
   title: string;
   email: string;
-  phone?: string;
+  phone: string;
   location?: string;
+  gender: string; // 性别：男、女
   avatar?: string;
   summary?: string;
   github?: string;
-  linkedin?: string;
   website?: string;
-  blog?: string;
   skills?: Skill[];
   experiences?: Experience[];
-  education?: Education[];
+  education?: Education;
   projects?: Project[];
   certifications?: Certification[];
   languages?: Language[];
