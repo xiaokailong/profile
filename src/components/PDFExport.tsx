@@ -131,7 +131,15 @@ export default function PDFExport({ profile }: PDFExportProps) {
           <Button key="close" onClick={() => setPreviewOpen(false)}>
             关闭
           </Button>,
-          <Button key="download" type="primary" onClick={() => generatePDF(false)}>
+          <Button 
+            key="download" 
+            type="primary" 
+            icon={<FilePdfOutlined />}
+            onClick={() => {
+              setPreviewOpen(false);
+              generatePDF(false);
+            }}
+          >
             下载PDF
           </Button>,
         ]}

@@ -56,6 +56,7 @@ export interface ProfileData {
   phone: string;
   location?: string;
   gender: string; // 性别：男、女
+  age?: number; // 年龄
   avatar?: string;
   summary?: string;
   github?: string;

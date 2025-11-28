@@ -42,13 +42,19 @@ export default function ProfileDisplay({ profile }: ProfileDisplayProps) {
               {profile.name}
               {profile.nameEn && <Text style={{ color: '#f0f0f0', fontSize: '0.7em', marginLeft: 8 }}>({profile.nameEn})</Text>}
             </Title>
-            <Title level={4} style={{ color: '#f0f0f0', marginTop: 0 }}>{profile.title}</Title>
-            <Space wrap style={{ color: 'white' }}>
+            <Title level={4} style={{ color: '#f0f0f0', marginTop: 0 }}>{profile.title}
               {profile.gender && (
-                <Text style={{ color: 'white' }}>
-                  {profile.gender === '男' ? <ManOutlined /> : <WomanOutlined />} {profile.gender}
+                <Text style={{ color: 'white', marginLeft: 12 }}>
+                  {profile.gender === '男' ? <ManOutlined /> : <WomanOutlined />} 
+                  {profile.gender}
                 </Text>
               )}
+              {profile.age && (
+                <Text style={{ color: 'white', marginLeft: 12 }}>
+                  {profile.age}岁
+                </Text>
+              )}</Title>
+            <Space wrap style={{ color: 'white' }}>
               {profile.email && (
                 <Text style={{ color: 'white' }}>
                   <MailOutlined /> {profile.email}
@@ -85,7 +91,7 @@ export default function ProfileDisplay({ profile }: ProfileDisplayProps) {
       </Card>
 
       {/* 数据统计概览 */}
-      <StatsOverview profile={profile} />
+      {/* <StatsOverview profile={profile} /> */}
 
       {/* 个人简介 */}
       {profile.summary && (
@@ -94,20 +100,32 @@ export default function ProfileDisplay({ profile }: ProfileDisplayProps) {
         </Card>
       )}
 
-      {/* 最高学历背景 */}
-      {profile.education && profile.education.school && (
-        <Card title="最高学历背景" style={{ marginBottom: 24 }}>
-          <div>
-            <Title level={5} style={{ marginBottom: 8 }}>{profile.education.school}</Title>
-            <Text strong>{profile.education.degree} - {profile.education.major}</Text>
-            <div style={{ marginTop: 4 }}>
-              <Text type="secondary">
+      {/* 学历/语言 */}
+      {(profile.education && profile.education.school) || (profile.languages && profile.languages.length > 0) ? (
+        <Card title="学历/语言" style={{ marginBottom: 24 }}>
+          {profile.education && profile.education.school && (
+            <div style={{ marginBottom: profile.languages && profile.languages.length > 0 ? 12 : 0 }}>
+              <Text strong>{profile.education.school} - {profile.education.major} - {profile.education.degree} </Text>
+              <Text type="secondary" style={{ float: 'right' }}>
                 {profile.education.startDate} - {profile.education.endDate}
               </Text>
             </div>
-          </div>
+          )}
+          {profile.languages && profile.languages.length > 0 && (
+            <div>
+              <Space wrap size="small" style={{display: 'block'}}>
+                {profile.languages.map((lang, idx) => (
+                  <span key={idx}>
+                    <Text strong>{lang.name}</Text>
+                    <Text type="secondary" style={{ float: 'right' }}> {lang.level}</Text>
+                    {idx < profile.languages.length - 1 && <Text type="secondary" style={{ margin: '0 8px' }}>|</Text>}
+                  </span>
+                ))}
+              </Space>
+            </div>
+          )}
         </Card>
-      )}
+      ) : null}
 
       {/* 专业技能 */}
       {profile.skills && profile.skills.length > 0 && (
@@ -124,7 +142,7 @@ export default function ProfileDisplay({ profile }: ProfileDisplayProps) {
 
       {/* 工作经历 */}
       {profile.experiences && profile.experiences.length > 0 && (
-        <Card title={<><CodeOutlined /> 工作经历</>} style={{ marginBottom: 24 }}>
+        <Card title="工作经历" style={{ marginBottom: 24 }}>
           <Timeline
             items={profile.experiences.map((exp: Experience) => ({
               color: exp.current ? 'green' : 'blue',
@@ -201,33 +219,17 @@ export default function ProfileDisplay({ profile }: ProfileDisplayProps) {
 
       {/* 证书与资质 */}
       {profile.certifications && profile.certifications.length > 0 && (
-        <Card title={<><TrophyOutlined /> 证书与资质</>} style={{ marginBottom: 24 }}>
+        <Card title="证书" style={{ marginBottom: 24 }}>
           <Space direction="vertical" style={{ width: '100%' }} size="middle">
             {profile.certifications.map((cert) => (
               <div key={cert.id} style={{ borderBottom: '1px dashed #e8e8e8', paddingBottom: 12 }}>
                 <Text strong style={{ fontSize: '15px' }}>{cert.name}</Text>
-                <div>
-                  <Text type="secondary">{cert.date}</Text>
-                </div>
+                <Text type="secondary" style={{float: 'right'}}>{cert.date}</Text>
                 {cert.url && (
-                  <a href={cert.url} target="_blank" rel="noopener noreferrer" style={{ marginTop: 4, display: 'inline-block' }}>
+                  <a href={cert.url} target="_blank" rel="noopener noreferrer" style={{ marginTop: 4, display: 'inline-block', float: 'right' }}>
                     查看证书
                   </a>
                 )}
-              </div>
-            ))}
-          </Space>
-        </Card>
-      )}
-
-      {/* 语言能力 */}
-      {profile.languages && profile.languages.length > 0 && (
-        <Card title="语言能力" style={{ marginBottom: 24 }}>
-          <Space direction="vertical" style={{ width: '100%' }} size="small">
-            {profile.languages.map((lang, idx) => (
-              <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
-                <Text strong>{lang.name}</Text>
-                <Tag color="blue">{lang.level}</Tag>
               </div>
             ))}
           </Space>

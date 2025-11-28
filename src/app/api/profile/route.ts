@@ -149,8 +149,8 @@ export async function POST(request: Request) {
     }
     
     const insertResult = await db.prepare(`
-      INSERT INTO Profile (userId, name, nameEn, title, email, phone, location, summary, avatar, skills, experiences, education, projects, certifications, languages)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO Profile (userId, name, nameEn, title, email, phone, location, gender, age, summary, avatar, skills, experiences, education, projects, certifications, languages)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).bind(
       data.userId,
       data.name,
@@ -159,6 +159,8 @@ export async function POST(request: Request) {
       data.email,
       data.phone || null,
       data.location || null,
+      data.gender || null,
+      data.age || null,
       data.summary || null,
       data.avatar || null,
       data.skills,
@@ -200,7 +202,7 @@ export async function PUT(request: Request) {
     
     await db.prepare(`
       UPDATE Profile SET 
-        name = ?, nameEn = ?, title = ?, email = ?, phone = ?, location = ?, summary = ?, avatar = ?,
+        name = ?, nameEn = ?, title = ?, email = ?, phone = ?, location = ?, gender = ?, age = ?, summary = ?, avatar = ?,
         skills = ?, experiences = ?, education = ?, projects = ?, certifications = ?, languages = ?,
         updatedAt = CURRENT_TIMESTAMP
       WHERE id = ?
@@ -211,6 +213,8 @@ export async function PUT(request: Request) {
       data.email,
       data.phone || null,
       data.location || null,
+      data.gender || null,
+      data.age || null,
       data.summary || null,
       data.avatar || null,
       data.skills,

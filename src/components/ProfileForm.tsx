@@ -62,7 +62,6 @@ export default function ProfileForm({ initialData, onSave, onCancel }: ProfileFo
       };
 
       await onSave(processedValues);
-      message.success('保存成功！');
     } catch (error) {
       message.error('保存失败，请重试');
     } finally {
@@ -150,12 +149,17 @@ export default function ProfileForm({ initialData, onSave, onCancel }: ProfileFo
               <Input placeholder="如: 北京市朝阳区" />
             </Form.Item>
           </Col>
-          <Col span={12}>
+          <Col span={6}>
             <Form.Item name="gender" label="性别" rules={[{ required: true, message: '请选择性别' }]}>
               <Select placeholder="请选择性别">
                 <Select.Option value="男">男</Select.Option>
                 <Select.Option value="女">女</Select.Option>
               </Select>
+            </Form.Item>
+          </Col>
+          <Col span={6}>
+            <Form.Item name="age" label="年龄">
+              <InputNumber min={18} max={100} placeholder="请输入年龄" style={{ width: '100%' }} />
             </Form.Item>
           </Col>
           <Col span={12}>
@@ -366,8 +370,8 @@ export default function ProfileForm({ initialData, onSave, onCancel }: ProfileFo
                     </Form.Item>
                   </Col>
                   <Col span={6}>
-                    <Form.Item {...restField} name={[name, 'date']} rules={[{ required: true }]}>
-                      <DatePicker picker="month" style={{ width: '100%' }} />
+                    <Form.Item {...restField} name={[name, 'date']}>
+                      <DatePicker picker="month" style={{ width: '100%' }} placeholder="获得时间（选填）" />
                     </Form.Item>
                   </Col>
                   <Col span={8}>

@@ -23,6 +23,7 @@ model Profile {
   phone         String  // 电话（必填）
   location      String?
   gender        String // 性别：男、女
+  age           Int? // 年龄
   avatar        String?
   summary       String? // 个人简介
 
