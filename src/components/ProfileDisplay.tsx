@@ -239,7 +239,7 @@ export default function ProfileDisplay({ profile }: ProfileDisplayProps) {
                   </div>
                 )}
                 <Space wrap>
-                  {exp.technologies && project.technologies.map((tech, idx) => (
+                  {project.technologies && project.technologies.map((tech, idx) => (
                     <Tag color="blue" key={idx}>{tech}</Tag>
                   ))}
                 </Space>
