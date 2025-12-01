@@ -52,9 +52,9 @@ export default function CreateProfilePage() {
 
   if (step === 'input') {
     return (
-      <div style={{ minHeight: '100vh', background: '#f0f2f5', padding: '24px 0' }}>
-        <div style={{ maxWidth: 600, margin: '0 auto', padding: '0 24px' }}>
-          <div style={{ marginBottom: 24, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div style={{ minHeight: '100vh', background: '#f0f2f5', padding: '12px 0' }}>
+        <div style={{ maxWidth: 600, margin: '0 auto', padding: '0 12px' }}>
+          <div style={{ marginBottom: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <h1>简历管理</h1>
             <Button 
               icon={<HomeOutlined />}
@@ -64,7 +64,7 @@ export default function CreateProfilePage() {
             </Button>
           </div>
 
-          <Card title="访问已有简历" style={{ marginBottom: 24 }}>
+          <Card title="访问已有简历" style={{ marginBottom: 12 }}>
             <p style={{ marginBottom: 16 }}>如果您已经有简历，请输入您的简历 ID：</p>
             <Input.Search
               placeholder="请输入简历 ID"
@@ -98,9 +98,9 @@ export default function CreateProfilePage() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#f0f2f5', padding: '24px 0' }}>
-      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 24px' }}>
-        <div style={{ marginBottom: 24, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+    <div style={{ minHeight: '100vh', background: '#f0f2f5', padding: '12px 0' }}>
+      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 12px' }}>
+        <div style={{ marginBottom: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <h1>创建新简历</h1>
           <Button 
             onClick={() => setStep('input')}

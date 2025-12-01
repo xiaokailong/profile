@@ -34,7 +34,7 @@ export default function StatsOverview({ profile }: StatsOverviewProps) {
   return (
     <>
       {/* 主要统计数据 */}
-      <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
+      <Row gutter={[16, 16]} style={{ marginBottom: 12 }}>
         <Col xs={12} sm={8} md={4}>
           <Card>
             <Statistic

@@ -104,7 +104,7 @@ export default function ProfileForm({ initialData, onSave, onCancel }: ProfileFo
       initialValues={initialValues}
       style={{ maxWidth: 1200, margin: '0 auto', padding: 0 }}
     >
-      <Card title="基本信息" style={{ marginBottom: 24 }}>
+      <Card title="基本信息" style={{ marginBottom: 12 }}>
         <Row gutter={16}>
           {!initialData && (
             <Col span={24}>
@@ -180,7 +180,7 @@ export default function ProfileForm({ initialData, onSave, onCancel }: ProfileFo
       </Card>
 
       {/* 最高学历背景 */}
-      <Card title="最高学历背景" style={{ marginBottom: 24 }}>
+      <Card title="最高学历背景" style={{ marginBottom: 12 }}>
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item name={['education', 'school']} label="学校">
@@ -210,7 +210,7 @@ export default function ProfileForm({ initialData, onSave, onCancel }: ProfileFo
         </Row>
       </Card>
 
-      <Card title="社交链接" style={{ marginBottom: 24 }}>
+      <Card title="社交链接" style={{ marginBottom: 12 }}>
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item name="github" label="GitHub">
@@ -225,13 +225,13 @@ export default function ProfileForm({ initialData, onSave, onCancel }: ProfileFo
         </Row>
       </Card>
 
-      <Card title="专业技能" style={{ marginBottom: 24 }}>
+      <Card title="专业技能" style={{ marginBottom: 12 }}>
         <Form.Item name="skills">
           <RichTextEditor placeholder="描述你的专业技能、技术栈和擅长领域" />
         </Form.Item>
       </Card>
 
-      <Card title="工作经历" style={{ marginBottom: 24 }}>
+      <Card title="工作经历" style={{ marginBottom: 12 }}>
         <Form.List name="experiences">
           {(fields, { add, remove }) => (
             <>
@@ -292,7 +292,7 @@ export default function ProfileForm({ initialData, onSave, onCancel }: ProfileFo
         </Form.List>
       </Card>
 
-      <Card title="项目经验" style={{ marginBottom: 24 }}>
+      <Card title="项目经验" style={{ marginBottom: 12 }}>
         <Form.List name="projects">
           {(fields, { add, remove }) => (
             <>
@@ -353,7 +353,7 @@ export default function ProfileForm({ initialData, onSave, onCancel }: ProfileFo
         </Form.List>
       </Card>
 
-      <Card title="证书与资质" style={{ marginBottom: 24 }}>
+      <Card title="证书与资质" style={{ marginBottom: 12 }}>
         <Form.List name="certifications">
           {(fields, { add, remove }) => (
             <>
@@ -389,7 +389,7 @@ export default function ProfileForm({ initialData, onSave, onCancel }: ProfileFo
         </Form.List>
       </Card>
 
-      <Card title="语言能力" style={{ marginBottom: 24 }}>
+      <Card title="语言能力" style={{ marginBottom: 12 }}>
         <Form.List name="languages">
           {(fields, { add, remove }) => (
             <>

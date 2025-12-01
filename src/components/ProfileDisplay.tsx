@@ -27,23 +27,8 @@ export default function ProfileDisplay({ profile }: ProfileDisplayProps) {
   return (
     <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0' }}>
       {/* 头部个人信息卡片 */}
-      <Card style={{ marginBottom: 24, background: '#ffff', borderRadius: 8 }}>
+      <Card style={{ marginBottom: 12, background: '#ffff', borderRadius: 8 }}>
         <div style={{ display: 'flex', alignItems: 'flex-start', gap: 24, flexWrap: 'wrap' }}>
-          {profile.avatar && (
-            <img 
-              src={profile.avatar}
-              alt={profile.name}
-              crossOrigin="anonymous"
-              style={{ 
-                border: '2px solid #d9d9d9',
-                width: '113px',
-                height: '151px',
-                borderRadius: '4px',
-                flexShrink: 0,
-                objectFit: 'cover'
-              }}
-            />
-          )}
           <div style={{ flex: 1, minWidth: 0 }}>
             <Title level={2} style={{ color: '#333', marginTop: 0, marginBottom: 8, lineHeight: 1.2 }}>
               {profile.name}
@@ -107,6 +92,21 @@ export default function ProfileDisplay({ profile }: ProfileDisplayProps) {
               )}
             </div>
           </div>
+          {profile.avatar && (
+            <img 
+              src={profile.avatar}
+              alt={profile.name}
+              crossOrigin="anonymous"
+              style={{ 
+                border: '2px solid #d9d9d9',
+                width: '113px',
+                height: '151px',
+                borderRadius: '4px',
+                flexShrink: 0,
+                objectFit: 'cover'
+              }}
+            />
+          )}
         </div>
       </Card>
 
@@ -115,7 +115,7 @@ export default function ProfileDisplay({ profile }: ProfileDisplayProps) {
 
       {/* 个人简介 */}
       {profile.summary && (
-        <Card title="个人简介" style={{ marginBottom: 24 }}>
+        <Card title="个人简介" style={{ marginBottom: 12 }}>
           <div 
             className="rich-text-display" 
             style={{ fontSize: '15px', lineHeight: '1.8' }}
@@ -126,7 +126,7 @@ export default function ProfileDisplay({ profile }: ProfileDisplayProps) {
 
       {/* 学历/语言 */}
       {(profile.education && profile.education.school) || (profile.languages && profile.languages.length > 0) ? (
-        <Card title="学历/语言" style={{ marginBottom: 24 }}>
+        <Card title="学历/语言" style={{ marginBottom: 12 }}>
           {profile.education && profile.education.school && (
             <div style={{ marginBottom: profile.languages && profile.languages.length > 0 ? 12 : 0 }}>
               <Text strong>{profile.education.school} - {profile.education.major} - {profile.education.degree} </Text>
@@ -153,7 +153,7 @@ export default function ProfileDisplay({ profile }: ProfileDisplayProps) {
 
       {/* 专业技能 */}
       {profile.skills && (
-        <Card title="专业技能" style={{ marginBottom: 24 }}>
+        <Card title="专业技能" style={{ marginBottom: 12 }}>
           <div 
             className="rich-text-display"
             dangerouslySetInnerHTML={{ __html: profile.skills }}
@@ -163,20 +163,22 @@ export default function ProfileDisplay({ profile }: ProfileDisplayProps) {
 
       {/* 工作经历 */}
       {profile.experiences && profile.experiences.length > 0 && (
-        <Card title="工作经历" style={{ marginBottom: 24 }}>
+        <Card title="工作经历" style={{ marginBottom: 12 }}>
           <Timeline
             items={profile.experiences.map((exp: Experience) => ({
               color: exp.current ? 'green' : 'blue',
               icon: exp.current ? <ClockCircleOutlined style={{ fontSize: '16px' }} /> : undefined,
               content: (
                 <div key={exp.id}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-                    <Text strong style={{ margin: 0 }}>{exp.position}</Text> - 
-                    <Text strong style={{ fontSize: '15px' }}>{exp.company}</Text>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <Text strong style={{ margin: 0 }}>{exp.company}</Text> - 
+                      <Text strong style={{ fontSize: '15px' }}>{exp.position}</Text>
+                      {exp.current && <Badge status="processing" text="在职" />}
+                    </div>
                     <Text type="secondary">
                       {exp.startDate} - {exp.current ? '至今' : exp.endDate}
                     </Text>
-                    {exp.current && <Badge status="processing" text="在职" />}
                   </div>
                   <Paragraph style={{ marginTop: 8 }}>
                     <div 
@@ -194,7 +196,7 @@ export default function ProfileDisplay({ profile }: ProfileDisplayProps) {
                       />
                     </div>
                   )} */}
-                  <Space wrap style={{ marginTop: 8 }}>
+                  <Space wrap>
                     {exp.technologies && exp.technologies.map((tech, idx) => (
                       <Tag color="blue" key={idx}>{tech}</Tag>
                     ))}
@@ -208,50 +210,60 @@ export default function ProfileDisplay({ profile }: ProfileDisplayProps) {
 
       {/* 项目经验 */}
       {profile.projects && profile.projects.length > 0 && (
-        <Card title="项目经验" style={{ marginBottom: 24 }}>
-          <Space orientation="vertical" style={{ width: '100%' }} size="large">
-            {profile.projects.map((project: Project) => (
-              <Card key={project.id} type="inner" style={{ background: '#fafafa' }}>
-                <Text strong>{project.name}</Text>
-                <Text strong style={{ color: '#1890ff', marginLeft: 8 }}>{project.role}</Text>
-                <Text type="secondary" style={{ marginLeft: 8 }}>
-                  {project.startDate} - {project.endDate || '至今'}
-                </Text>
-                {project.url && (
-                    <a href={project.url} target="_blank" rel="noopener noreferrer" style={{ float: 'right' }}>
-                      <GlobalOutlined /> 项目链接
-                    </a>
-                )}
-                <Paragraph style={{ marginTop: 8 }}>
+        <Card title="项目经验" style={{ marginBottom: 12 }}>
+          <div>
+            {profile.projects.map((project: Project, index) => (
+              <div 
+                key={project.id} 
+                style={{ 
+                  paddingBottom: 16, 
+                  marginBottom: 16,
+                  borderBottom: index < profile.projects.length - 1 ? '1px solid #e8e8e8' : 'none'
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+                  <div>
+                    <Text strong style={{ fontSize: '15px' }}>{project.name}</Text>
+                    <Text strong style={{ color: '#1890ff', marginLeft: 8 }}>{project.role}</Text>
+                  </div>
+                  <Text type="secondary">
+                    {project.startDate} - {project.endDate || '至今'}
+                  </Text>
+                </div>
+                <div style={{ marginTop: 8 }}>
                   <div 
                     className="rich-text-display"
                     dangerouslySetInnerHTML={{ __html: project.description }}
                   />
-                </Paragraph>
+                </div>
                 {project.highlights && (
-                  <div style={{ marginTop: 8, padding: '8px 12px', background: '#fff', borderRadius: '4px', borderLeft: '3px solid #1890ff' }}>
+                  <div style={{ marginTop: 8, paddingLeft: 12, borderLeft: '3px solid #1890ff' }}>
                     <Text type="secondary" style={{ fontSize: '13px' }}>项目亮点：</Text>
                     <div 
                       className="rich-text-display" 
-                      style={{ marginTop: 4, marginBottom: 0 }}
+                      style={{ marginTop: 4 }}
                       dangerouslySetInnerHTML={{ __html: project.highlights }}
                     />
                   </div>
                 )}
-                <Space wrap>
-                  {project.technologies && project.technologies.map((tech, idx) => (
-                    <Tag color="blue" key={idx}>{tech}</Tag>
-                  ))}
-                </Space>
-              </Card>
+                {project.technologies && project.technologies.length > 0 && (
+                  <div style={{ marginTop: 8 }}>
+                    <Space wrap size="small">
+                      {project.technologies.map((tech, idx) => (
+                        <Tag color="blue" key={idx}>{tech}</Tag>
+                      ))}
+                    </Space>
+                  </div>
+                )}
+              </div>
             ))}
-          </Space>
+          </div>
         </Card>
       )}
 
       {/* 证书与资质 */}
       {profile.certifications && profile.certifications.length > 0 && (
-        <Card title="证书" style={{ marginBottom: 24 }}>
+        <Card title="证书" style={{ marginBottom: 12 }}>
           <Space orientation="vertical" style={{ width: '100%' }} size="middle">
             {profile.certifications.map((cert) => (
               <div key={cert.id} style={{ borderBottom: '1px dashed #e8e8e8', paddingBottom: 12 }}>

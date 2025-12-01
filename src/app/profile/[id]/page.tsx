@@ -89,15 +89,15 @@ export default function ProfilePage({ params }: ProfilePageProps) {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#f0f2f5', padding: '24px 0' }}>
-      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 24px' }}>
-        <div style={{ marginBottom: 24, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+    <div style={{ minHeight: '100vh', background: '#f0f2f5', padding: '12px 0' }}>
+      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 12px' }}>
+        <div className="no-print" style={{ marginBottom: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
             <h1>{profile.name} 的个人简历</h1>
             <p style={{ color: '#666', fontSize: '14px' }}>简历 ID: {profile.userId}</p>
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
-            <PDFExport profile={profile} />
+            <PDFExport />
             <Button 
               type="primary" 
               icon={<EditOutlined />}
