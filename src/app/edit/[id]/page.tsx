@@ -75,8 +75,8 @@ export default function EditProfilePage({ params }: EditProfilePageProps) {
         const savedProfile = await response.json() as ProfileData;
         setProfile(savedProfile);
         message.success('保存成功！');
-        // Navigate back to public profile page using userId
-        router.push(`/profile/${savedProfile.userId}`);
+        // Navigate back to home page
+        router.push('/');
       } else {
         throw new Error('保存失败');
       }

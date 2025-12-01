@@ -218,7 +218,7 @@ export default function ProfileDisplay({ profile }: ProfileDisplayProps) {
                 style={{ 
                   paddingBottom: 16, 
                   marginBottom: 16,
-                  borderBottom: index < profile.projects.length - 1 ? '1px solid #e8e8e8' : 'none'
+                  borderBottom: index < (profile.projects?.length || 0) - 1 ? '1px solid #e8e8e8' : 'none'
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
