@@ -21,6 +21,7 @@ import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
 import { ProfileData } from '@/types/profile';
 import dayjs from 'dayjs';
 import RichTextEditor from './RichTextEditor';
+import { textAlign } from 'html2canvas/dist/types/css/property-descriptors/text-align';
 
 const { TextArea } = Input;
 
@@ -431,16 +432,33 @@ export default function ProfileForm({ initialData, onSave, onCancel }: ProfileFo
 
       <Divider />
 
-      <Form.Item>
+      <div 
+        className="no-print"
+        style={{ 
+          position: 'fixed', 
+          bottom: 0, 
+          left: 0, 
+          right: 0, 
+          background: 'white', 
+          padding: '16px 24px', 
+          borderTop: '1px solid #e8e8e8',
+          zIndex: 1000,
+          display: 'flex',
+          justifyContent: 'flex-end'
+        }}
+      >
         <Space>
-          <Button type="primary" htmlType="submit" loading={loading} size="large">
-            保存
-          </Button>
           <Button onClick={onCancel} size="large">
             取消
           </Button>
+          <Button type="primary" htmlType="submit" loading={loading} size="large">
+            保存
+          </Button>
         </Space>
-      </Form.Item>
+      </div>
+      
+      {/* 占位元素，防止内容被固定按钮遮挡 */}
+      <div style={{ height: '80px' }}></div>
     </Form>
   );
 }

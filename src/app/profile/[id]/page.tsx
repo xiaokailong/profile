@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button, FloatButton, Spin, App } from 'antd';
-import { EditOutlined } from '@ant-design/icons';
+import { EditOutlined, PlusOutlined } from '@ant-design/icons';
 import ProfileDisplay from '@/components/ProfileDisplay';
 import PDFExport from '@/components/PDFExport';
 import { ProfileData } from '@/types/profile';
@@ -97,6 +97,13 @@ export default function ProfilePage({ params }: ProfilePageProps) {
             <p style={{ color: '#666', fontSize: '14px' }}>简历 ID: {profile.userId}</p>
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
+            <Button 
+              type="default" 
+              icon={<PlusOutlined />}
+              onClick={() => router.push('/edit')}
+            >
+              新建简历
+            </Button>
             <PDFExport />
             <Button 
               type="primary" 

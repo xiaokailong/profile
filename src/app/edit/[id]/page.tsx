@@ -75,8 +75,8 @@ export default function EditProfilePage({ params }: EditProfilePageProps) {
         const savedProfile = await response.json() as ProfileData;
         setProfile(savedProfile);
         message.success('保存成功！');
-        // Navigate back to home page
-        router.push('/');
+        // Navigate back to profile page using userId
+        router.push(`/profile/${savedProfile.userId}`);
       } else {
         throw new Error('保存失败');
       }
@@ -116,7 +116,7 @@ export default function EditProfilePage({ params }: EditProfilePageProps) {
           </div>
           <Button 
             icon={<ArrowLeftOutlined />}
-            onClick={() => router.push(`/profile/${profileId}`)}
+            onClick={() => router.push(`/profile/${profile.userId}`)}
           >
             返回简历
           </Button>

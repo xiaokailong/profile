@@ -3,20 +3,25 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button, FloatButton, Spin, App } from 'antd';
-import { EditOutlined } from '@ant-design/icons';
+import { PlusOutlined, LinkOutlined } from '@ant-design/icons';
 import ProfileDisplay from '@/components/ProfileDisplay';
-import PDFExport from '@/components/PDFExport';
 import { ProfileData } from '@/types/profile';
 import { fetchAPI } from '@/lib/api';
 
 export default function Home() {
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [myProfileId, setMyProfileId] = useState<string | null>(null);
   const router = useRouter();
   const { message: messageApi } = App.useApp();
 
   useEffect(() => {
     fetchProfile();
+    // 从 localStorage 读取用户自己的简历 ID
+    const savedUserId = localStorage.getItem('myProfileUserId');
+    if (savedUserId) {
+      setMyProfileId(savedUserId);
+    }
   }, []);
 
   const fetchProfile = async () => {
@@ -70,14 +75,25 @@ export default function Home() {
             <h1>个人简历</h1>
             <p style={{ color: '#666', fontSize: '14px' }}>简历 ID: {profile.userId}</p>
           </div>
-          <div style={{ display: 'flex', gap: 8 }}>
-            <PDFExport />
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+            {myProfileId && (
+              <div style={{ marginRight: 8 }}>
+                <span style={{ color: '#666', fontSize: '14px', marginRight: 8 }}>当前您的简历链接为：</span>
+                <Button 
+                  type="link" 
+                  icon={<LinkOutlined />}
+                  onClick={() => router.push(`/profile/${myProfileId}`)}
+                >
+                  {myProfileId}
+                </Button>
+              </div>
+            )}
             <Button 
               type="primary" 
-              icon={<EditOutlined />}
-              onClick={() => router.push(`/edit/${profile.id}`)}
+              icon={<PlusOutlined />}
+              onClick={() => router.push('/edit')}
             >
-              编辑信息
+              新建简历
             </Button>
           </div>
         </div>

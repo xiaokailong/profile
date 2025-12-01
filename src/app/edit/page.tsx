@@ -23,6 +23,8 @@ export default function CreateProfilePage() {
 
       if (response.ok) {
         const savedProfile = await response.json() as ProfileData;
+        // 保存用户自己的简历 ID 到 localStorage
+        localStorage.setItem('myProfileUserId', savedProfile.userId);
         message.success(`简历创建成功！您的简历 ID 是: ${savedProfile.userId}`);
         setTimeout(() => {
           router.push(`/profile/${savedProfile.userId}`);

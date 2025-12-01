@@ -49,6 +49,7 @@ export default function PDFExport() {
 
       <Button
         type="primary"
+        style={{ backgroundColor: '#52c41a', borderColor: '#52c41a' }}
         icon={<PrinterOutlined />}
         onClick={handlePrint}
       >
